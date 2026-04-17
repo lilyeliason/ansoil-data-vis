@@ -51,25 +51,28 @@ the-018-percent/
 The visualization moves through 7 scenes:
  
 **Scene 1 — The 0.18%**
-A rotating globe establishes Antarctica. The 0.18% of ice-free land is revealed, with pulsing blobs marking where life and soil exist.
+- A rotating globe establishes Antarctica. The 0.18% of ice-free land is revealed, with pulsing blobs marking where life and soil exist.
  
 **Scene 2 — Why soils matter**
-An ecosystem pyramid builds from the ground up, showing soil chemistry as the foundation for all Antarctic biodiversity. The scene transitions into what geochemistry actually measures and why the data gap is so significant.
+- An ecosystem pyramid builds from the ground up, showing soil chemistry as the foundation for all Antarctic biodiversity. The scene transitions into what geochemistry actually measures and why the data gap is so significant.
  
 **Scene 3 — Conditions are changing**
-Ice retreat footage establishes the urgency: as the climate warms, soils that have been frozen for thousands of years are being exposed — with no chemical baseline to track what's being lost.
+- Ice retreat footage establishes the urgency: as the climate warms, soils that have been frozen for thousands of years are being exposed — with no chemical baseline to track what's being lost.
  
 **Scene 4 — The sampling problem**
-The ideal coverage (all 28 biogeographic regions) is set against the reality: 171 samples from just 4 regions. Field costs, logistics, and remoteness make comprehensive sampling impossible.
+- The ideal coverage (all 28 biogeographic regions) is set against the reality: 171 samples from just 4 regions. Field costs, logistics, and remoteness make comprehensive sampling impossible.
  
 **Scene 5 — The approach**
-Satellite-derived environmental layers (elevation, precipitation, slope, lithology) are introduced as a continent-wide data source. A machine learning equation — samples + satellite data + ML models = predicted geochemistry — frames the solution.
+- Satellite-derived environmental layers (elevation, precipitation, slope, lithology) are introduced as a continent-wide data source. A machine learning equation — samples + satellite data + ML models = predicted geochemistry — frames the solution.
  
 **Scene 6 — Explore the predictions**
-An interactive map explorer lets users browse ML-predicted soil properties across the continent. Five properties are selectable, each with a plain-language explanation of what the spatial pattern reveals.
+- An interactive map explorer lets users browse ML-predicted soil properties across the continent. Five properties are selectable, each with a plain-language explanation of what the spatial pattern reveals.
  
 **Scene 7 — Why it matters**
-Three panels lay out the downstream significance: tracking a changing climate, guiding smarter field expeditions, and understanding Antarctic soils as an analogue for life on Mars.
+- Three panels lay out the downstream significance: tracking a changing climate, guiding smarter field expeditions, and understanding Antarctic soils as an analogue for life on Mars.
+
+**Scene 8 — Credits & Acknowledgements**
+- Links to further reading and credits for resources used. 
  
 ---
 
