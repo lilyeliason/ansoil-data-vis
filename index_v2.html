@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The 0.18%</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://unpkg.com/scrollama"></script>
+ 
+  <style>
+    :root {
+      --color-bg:             #0A1628; 
+      --color-text-primary:   #E8F4F8; 
+      --color-text-secondary: #4A9ECA; 
+      --color-dig-deeper:     #2D6E7E; 
+      --c-bg-panel:           #0D1E35; 
+      --c-ice-shadow:         #5A88AA; 
+      --c-teal-light:         #3D8FA2; 
+      --c-border:             rgba(74,158,202,0.18); 
+      --c-overlay:            rgba(10,22,40,0.74); 
+      --font-body: "Helvetica Neue",sans-serif;
+      --step-max-width: 520px; 
+      --dot-size: 9px;         
+      --panel-width: 380px;    
+    }
+ 
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6; 
+      overflow-x: hidden; 
+    }
+ 
+    .scene { position: relative; width: 100%; }
+ 
+    .scene-graphic {
+      position: sticky; 
+      top: 0;            
+      width: 100%;
+      height: 100vh;    
+      overflow: hidden;
+      z-index: 0;       
+      background: var(--color-bg);
+    }
+ 
+    .globe-fallback {
+      position: absolute; inset: 0; 
+      background: url('assets/images/ant_globe_view.png') center / cover no-repeat;
+      z-index: 0;
+    }
+ 
+    .scene-graphic video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 1; 
+    }
+ 
+    .scene-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,22,40,.18) 0%,   
+        rgba(10,22,40,.38) 55%,  
+        rgba(10,22,40,.70) 100%  
+      );
+    }
+ 
+    #svg-flecks-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    #svg-flecks-container circle {
+      stroke: none;
+      fill: #E8F4F8;
+      opacity: 0;
+    }
+    #svg-flecks-container.is-active circle:nth-child(1)  { animation: blobPulse 3.1s 0.00s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(2)  { animation: blobPulse 2.8s 0.18s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(3)  { animation: blobPulse 3.5s 0.36s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(4)  { animation: blobPulse 2.9s 0.54s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(5)  { animation: blobPulse 3.3s 0.72s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(6)  { animation: blobPulse 3.0s 0.90s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(7)  { animation: blobPulse 3.6s 1.08s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(8)  { animation: blobPulse 2.7s 1.26s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(9)  { animation: blobPulse 3.2s 1.44s infinite alternate ease-in-out; }
+    #svg-flecks-container.is-active circle:nth-child(10) { animation: blobPulse 3.4s 1.62s infinite alternate ease-in-out; }
+    @keyframes blobPulse {
+      0%   { opacity: 0.45; }
+      100% { opacity: 0.90; }
+    }
+ 
+    #title-block {
+      position: absolute; inset: 0; z-index: 4;
+      display: flex; flex-direction: column; 
+      align-items: center; justify-content: center; 
+      text-align: center; padding: 0 20px;
+      margin-top: -8vh;
+      pointer-events: none;
+      transition: opacity .55s ease; 
+    }
+    #title-block.faded { opacity: 0; } 
+    .display-title {
+      font-size: clamp(3.2rem, 9vw, 7.5rem); 
+      font-weight: 300;
+      letter-spacing: -.025em; 
+      line-height: 1;
+      color: var(--color-text-primary);
+    }
+    .display-subtitle {
+      margin-top: 1rem;
+      font-size: clamp(.85rem, 1.8vw, 1.05rem);
+      font-weight: 400;
+      letter-spacing: .08em; 
+      color: rgba(232,244,248,0.55);
+    }
+ 
+    #scroll-cue {
+      position: absolute; bottom: 34px; left: 50%;
+      transform: translateX(-50%); 
+      z-index: 5;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      pointer-events: none;
+      transition: opacity .4s ease;
+    }
+    #scroll-cue.hidden { opacity: 0; } 
+    #scroll-cue .cue-line {
+      width: 1px; height: 32px;
+      background: linear-gradient(to bottom, transparent, var(--color-text-secondary));
+      animation: cueLine 1.7s ease-in-out infinite; 
+    }
+    #scroll-cue svg { animation: cueArrow 1.7s ease-in-out infinite; }
+    @keyframes cueLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+      45%  { transform: scaleY(1); opacity: 1; }
+      100% { transform: scaleY(1); opacity: 0; transform-origin: bottom; }
+    }
+ 
+    .s1-text {
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      max-width: 420px;
+    }
+    .s1-text.visible { opacity: 1; }
+    .s1-text p {
+      font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+      font-weight: 300;
+      color: var(--color-text-primary);
+      line-height: 1.7;
+      margin: 0;
+    }
+    .s1-text p strong { font-weight: 500; }
+    #s1-text-1 { top: 12vh; left: 2vw; }
+    #s1-text-2 { top: 25vh; left: 2vw; }
+ 
+    /* ── SCENE 2: SOILS + GEO ── */
+    #scene-2 .scene-graphic {
+      overflow: hidden;
+    }
+    #s2soil-bg {
+      position: absolute;
+      inset: 0;
+      background: url('assets/images/antarctic_soils.jpg') center / cover no-repeat;
+      z-index: 0;
+      opacity: 0.35;
+      transition: opacity 0.8s ease;
+    }
+    #s2soil-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to bottom,
+        rgba(10,22,40,0.55) 0%,
+        rgba(10,22,40,0.30) 40%,
+        rgba(10,22,40,0.65) 100%);
+      pointer-events: none;
+    }
+    #s2soil-content {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(32px, 5vw, 72px);
+      padding: 0 5vw;
+      pointer-events: none;
+    }
+    #s2soil-text-stack {
+      position: relative;
+      width: clamp(300px, 34vw, 440px);
+      height: clamp(320px, 60vh, 540px);
+      flex-shrink: 0;
+      overflow: visible;
+      margin-top: 4vh;
+    }
+    .s2soil-text {
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.7s ease;
+      pointer-events: none;
+    }
+    #s2soil-text-2 { top: 50%; transform: translateY(-50%); text-align: center; }
+    .s2soil-text.visible { opacity: 1; }
+    .s2soil-text-wide { min-width: 340px; max-width: 480px; margin: 0 auto; }
+    .s2soil-text p {
+      font-size: clamp(0.95rem, 1.55vw, 1.15rem);
+      font-weight: 300;
+      color: var(--color-text-primary);
+      line-height: 1.75;
+      margin-bottom: 0.6em;
+    }
+    .s2soil-text p:last-child { margin-bottom: 0; }
+    .s2soil-text p strong { font-weight: 500; }
+    .s2soil-em {
+      font-size: clamp(1rem, 1.6vw, 1.3rem) !important;
+      font-weight: 300 !important;
+      color: var(--color-text-secondary) !important;
+      margin-top: 0.8em !important;
+    }
+    #s2soil-text-2 .s2soil-em {
+      opacity: 0;
+      transition: opacity 0.8s ease 1.2s !important;
+    }
+    #s2soil-text-2.visible .s2soil-em { opacity: 1; }
+    .s2soil-beat2-intro {
+      font-size: clamp(1rem, 1.6vw, 1.2rem) !important;
+      margin-bottom: 0.9em !important;
+    }
+    #s2soil-diagram {
+      flex: 0 0 auto;
+      width: clamp(280px, 38vw, 500px);
+      margin-bottom: 4vh;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+      pointer-events: none;
+      position: static;
+    }
+    #s2soil-diagram.visible { opacity: 1; }
+    #s2soil-svg { width: 100%; height: auto; }
+ 
+    /* Geo beats (overlaid on same scene-2 graphic) */
+    #s2geo-bg {
+      position: absolute; inset: 0;
+      background: url('assets/images/ant_coast.jpg') center / cover no-repeat;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    #s2geo-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: rgba(10,22,40,0.62);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    #s2geo-beat-a, #s2geo-beat-a2, #s2geo-beat-a3 {
+      position: absolute; inset: 0; z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 14vw;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      pointer-events: none;
+    }
+    #s2geo-beat-a.visible,
+    #s2geo-beat-a2.visible,
+    #s2geo-beat-a3.visible { opacity: 1; }
+    .s2geo-hook {
+      font-size: clamp(1rem, 1.7vw, 1.3rem);
+      font-weight: 300;
+      color: var(--color-text-primary);
+      line-height: 1.65;
+      margin-bottom: 0.75em;
+      max-width: 900px;
+    }
+    .s2geo-hook:last-child { margin-bottom: 0; }
+    .s2geo-hook-em { color: var(--color-text-secondary); }
+ 
+    #s2geo-beat-b {
+      position: absolute; inset: 0; z-index: 4;
+      display: flex;
+      align-items: stretch;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      pointer-events: none;
+      padding-left: 8vw;
+    }
+    #s2geo-beat-b.visible { opacity: 1; }
+    #s2geo-photo-col {
+      width: 40%;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    #s2geo-photo-img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
+      display: block;
+    }
+    #s2geo-props-col {
+      width: 60%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6vh 5vw 6vh 4vw;
+      overflow-y: auto;
+      border-left: 1px solid var(--c-border);
+    }
+    .s2geo-props-title {
+      font-size: clamp(1rem, 1.6vw, 1.25rem);
+      font-weight: 400;
+      color: var(--color-text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+    .s2geo-props-body {
+      font-size: clamp(0.88rem, 1.15vw, 1rem);
+      font-weight: 300;
+      color: var(--color-text-primary);
+      line-height: 1.7;
+      margin-bottom: 22px;
+      max-width: 650px;
+    }
+    .s2geo-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .s2geo-bubble {
+      font-size: clamp(0.72rem, 1vw, 0.84rem);
+      font-weight: 400;
+      color: rgba(74,158,202,0.9);
+      border: 1px solid rgba(74,158,202,0.35);
+      border-radius: 20px;
+      padding: 6px 14px;
+      background: rgba(74,158,202,0.07);
+      letter-spacing: 0.02em;
+      line-height: 1.3;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .s2geo-bubble:hover {
+      background: rgba(74,158,202,0.14);
+      border-color: rgba(74,158,202,0.6);
+    }
+ 
+    /* ── SCENE 3: CLIMATE CHANGE ── */
+    #scene-2-imgbg {
+      position: absolute; inset: 0;
+      background: url('assets/images/ant_mass_change.png') center / cover no-repeat;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    #scene-2-imgbg.show { opacity: 1; }
+    #scene-2-video {
+      position: absolute; inset: 0;
+      display: block !important;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      transform: scale(1.12);
+      transform-origin: center center;
+    }
+    #scene-2-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      background: rgba(10,22,40,0.55);
+      transition: background 1.2s ease;
+    }
+    #scene-2-title {
+      position: absolute; inset: 0; z-index: 4;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; pointer-events: none;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #scene-2-title.visible { opacity: 1; transform: translateY(0); }
+    #scene-2-title h2 {
+      font-size: clamp(1.2rem, 2.6vw, 2rem);
+      font-weight: 300; letter-spacing: -0.02em;
+      color: var(--color-text-primary);
+      line-height: 1.25; max-width: 640px; padding: 0 24px;
+    }
+    #scene-2-panel {
+      position: absolute; right: 4vw; bottom: 20vh;
+      width: clamp(260px, 28vw, 380px);
+      z-index: 4;
+      background: rgba(10,22,40,0.82);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-radius: 6px; padding: 20px 22px;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+    }
+    #scene-2-panel.visible { opacity: 1; transform: translateY(0); }
+    #scene-2-panel p {
+      font-size: clamp(0.75rem, 1.1vw, 0.85rem);
+      color: var(--color-text-primary); line-height: 1.7;
+      font-weight: 300; margin: 0;
+    }
+    #s2-play-btn {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5; width: 64px; height: 64px;
+      border-radius: 50%; background: rgba(10,22,40,0.75);
+      border: 1.5px solid rgba(74,158,202,0.5);
+      color: var(--color-text-secondary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.3s ease, background 0.2s ease, border-color 0.2s ease, transform 0.3s ease;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #s2-play-btn:hover { background: rgba(10,22,40,0.92); border-color: var(--color-text-secondary); }
+    #s2-play-btn svg { margin-left: 4px; }
+    #s2-play-btn.hidden { opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(0.85); }
+ 
+    /* ── SCENE 4: SAMPLING ── */
+    #scene-4 .scene-graphic { background: #ffffff; overflow: hidden; }
+    #s4-overlay { position: absolute; inset: 0; background: #ffffff; z-index: 0; }
+    .s4-beat {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(28px, 4vw, 60px); padding: 5vh 6vw;
+      opacity: 0; transition: opacity 0.7s ease; pointer-events: none;
+    }
+    .s4-beat.visible { opacity: 1; pointer-events: auto; }
+ 
+    #s4-beat-0 { flex-direction: column; gap: 3vh; background: #ffffff; }
+    #s4b-intro-text { max-width: 700px; text-align: center; }
+    #s4b-intro-text p {
+      font-size: clamp(0.9rem, 1.45vw, 1.05rem);
+      font-weight: 300; color: #1a1a1a;
+      line-height: 1.75; margin-bottom: 0.7em;
+    }
+    #s4b-map { display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
+    #s4b-map-img {
+      width: clamp(360px, 52vw, 680px); height: auto;
+      border-radius: 3px; box-shadow: 0 4px 28px rgba(0,0,0,0.5);
+      border: 1px solid var(--c-border);
+    }
+    .s4-caption {
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(0,0,0,0.45); text-align: center;
+    }
+ 
+    #s4-beat-1 { position: absolute; inset: 0; padding: 0; align-items: stretch; }
+    #s4b-photo-col { position: absolute; inset: 0; }
+    #s4b-fieldwork-img {
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: 30% center; display: block;
+    }
+    #s4b-barriers {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: clamp(280px, 36vw, 460px); z-index: 2;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 5vh 4vw 5vh 3vw;
+      background: rgba(10,22,40,0.82);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-left: 1px solid var(--c-border);
+    }
+    #s4b-barriers-intro {
+      font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+      font-weight: 300; color: var(--color-text-primary);
+      margin-bottom: 32px; line-height: 1.3;
+    }
+    #s4b-barrier-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px; }
+    .s4b-barrier-item { display: flex; align-items: flex-start; gap: 14px; }
+    .s4b-barrier-icon { font-size: 1.25rem; line-height: 1; flex-shrink: 0; margin-top: 2px; width: 24px; text-align: center; }
+    .s4b-barrier-label { display: block; font-size: clamp(0.86rem, 1.15vw, 0.98rem); font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
+    .s4b-barrier-sub { display: block; font-size: clamp(0.7rem, 0.92vw, 0.8rem); font-weight: 300; color: rgba(232,244,248,0.65); line-height: 1.55; }
+ 
+    /* Beat 2: The reality (171 samples) */
+    #s4-beat-2 { gap: clamp(40px, 6vw, 80px); padding: 0 7vw; background: #ffffff; }
+    #s4c-text { position: relative; z-index: 2; max-width: 400px; flex-shrink: 0; }
+    #s4c-label {
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #1a6a8a; margin-bottom: 14px;
+      display: block;
+    }
+    #s4c-headline {
+      font-size: clamp(1rem, 1.7vw, 1.3rem);
+      font-weight: 300; color: #1a1a1a;
+      line-height: 1.55; margin-bottom: 16px;
+    }
+    #s4c-headline strong { font-weight: 500; }
+    #s4c-sub {
+      font-size: clamp(0.78rem, 1.05vw, 0.9rem);
+      font-weight: 300; color: rgba(0,0,0,0.55); line-height: 1.7;
+    }
+    #s4c-map-col { position: relative; z-index: 2; display: flex; flex-direction: row; align-items: center; gap: 24px; flex-shrink: 0; }
+    #s4c-map-inner { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    #s4c-legend { display: flex; flex-direction: column; gap: 10px; justify-content: center; padding-left: 8px; }
+    #s4c-map-frame {
+      height: clamp(360px, 72vh, 620px);
+      width: calc(clamp(360px, 72vh, 620px) * (612 / 792));
+    }
+    .s3-svg-frame {
+      background: #ffffff; border-radius: 2px; overflow: hidden;
+      position: relative; flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 40px rgba(0,0,0,0.45);
+    }
+    .s3-svg-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .s4c-legend-item { display: flex; align-items: center; gap: 8px; }
+    .s4c-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .s4c-legend-label { font-size: 0.72rem; font-weight: 400; color: rgba(0,0,0,0.6); letter-spacing: 0.03em; white-space: nowrap; }
+ 
+    /* ── SCENE 5: SATELLITE + EQUATION ── */
+    #scene-5 .scene-graphic {
+      background: var(--color-bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    #s5-overlay { position: absolute; inset: 0; background: var(--color-bg); z-index: 0; }
+ 
+    /* Satellite beat */
+    #s5-sat-beat {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(36px, 5vw, 72px); padding: 0 5vw;
+      opacity: 0; transition: opacity 0.7s ease; pointer-events: none;
+    }
+    #s5-sat-beat.visible { opacity: 1; }
+    #s5d-text { position: relative; z-index: 2; max-width: 380px; flex-shrink: 0; }
+    #s5d-label {
+      font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--color-text-secondary); margin-bottom: 14px;
+      display: block;
+    }
+    #s5d-headline {
+      font-size: clamp(0.95rem, 1.55vw, 1.15rem);
+      font-weight: 300; color: var(--color-text-primary);
+      line-height: 1.7; margin-bottom: 12px;
+    }
+    #s5d-headline strong { font-weight: 500; }
+    #s5d-sub {
+      font-size: clamp(0.78rem, 1.05vw, 0.88rem);
+      font-weight: 300; color: rgba(232,244,248,0.65);
+      line-height: 1.65; margin-bottom: 20px;
+    }
+    #s5d-varlist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; }
+    #s5d-varlist li {
+      font-size: clamp(0.74rem, 0.98vw, 0.86rem); font-weight: 400;
+      color: rgba(74,158,202,0.85); letter-spacing: 0.05em;
+      padding-left: 12px; position: relative;
+    }
+    #s5d-varlist li::before {
+      content: ''; position: absolute; left: 0;
+      top: 50%; transform: translateY(-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: rgba(74,158,202,0.55);
+    }
+    #s5d-grid {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(6px, 1vw, 12px);
+      flex-shrink: 0; width: clamp(280px, 40vw, 520px);
+    }
+    .s5d-grid-item { display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+    .s5d-grid-img {
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+      object-position: center; display: block;
+      border-radius: 2px; border: 1px solid var(--c-border);
+    }
+    .s5d-grid-label {
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(232,244,248,0.45); text-align: center;
+    }
+    .s5d-grid-item {
+      opacity: 0; transform: scale(0.97);
+      transition: opacity 0.7s cubic-bezier(0.22,0.61,0.36,1) var(--delay, 0s),
+                  transform 0.7s cubic-bezier(0.22,0.61,0.36,1) var(--delay, 0s);
+    }
+    #s5d-grid.revealed .s5d-grid-item { opacity: 1; transform: scale(1); }
+ 
+    /* Pivot line between sat and equation */
+    #s5-pivot-line {
+      position: absolute; inset: 0; z-index: 3;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 0 14vw;
+      opacity: 0; transition: opacity 0.7s ease; pointer-events: none;
+    }
+    #s5-pivot-line.visible { opacity: 1; }
+    #s5-pivot-line p {
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      font-weight: 300; color: rgba(232,244,248,0.85);
+      line-height: 1.65; letter-spacing: 0.01em;
+      border-top: 1px solid var(--c-border);
+      border-bottom: 1px solid var(--c-border);
+      padding: 2rem 0; max-width: 600px;
+    }
+ 
+    /* Equation beat */
+    #s5-eq-beat {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4vh; padding: 4vh 6vw;
+      opacity: 0; transition: opacity 0.7s ease; pointer-events: none;
+    }
+    #s5-eq-beat.visible { opacity: 1; }
+    #s5eq-text { position: relative; z-index: 2; text-align: center; max-width: 640px; }
+    #s5eq-label {
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 10px;
+      display: block;
+    }
+    #s5eq-headline {
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 300; color: var(--color-text-primary);
+      line-height: 1.4; margin-bottom: 10px;
+    }
+    #s5eq-sub {
+      font-size: clamp(0.82rem, 1.15vw, 0.95rem);
+      font-weight: 300; color: rgba(232,244,248,0.6); line-height: 1.65;
+    }
+    #s5eq-equation {
+      position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(12px, 2.5vw, 28px); flex-wrap: nowrap;
+    }
+    .s5eq-term { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .s5eq-circle {
+      width: clamp(90px, 10vw, 128px); height: clamp(90px, 10vw, 128px);
+      border-radius: 50%; border: 1.5px solid var(--c-border);
+      background: rgba(10,22,40,0.6);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .s5eq-circle svg { width: 55%; height: 55%; }
+    .s5eq-circle-label {
+      font-size: clamp(0.7rem, 0.95vw, 0.82rem); font-weight: 500;
+      color: var(--color-text-primary); text-align: center;
+      max-width: clamp(90px, 10vw, 140px);
+    }
+    .s5eq-circle-sub {
+      font-size: clamp(0.6rem, 0.78vw, 0.68rem); font-weight: 300;
+      color: rgba(232,244,248,0.45); text-align: center;
+      max-width: clamp(90px, 10vw, 140px);
+    }
+    .s5eq-plus {
+      font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 200;
+      color: rgba(232,244,248,0.35); line-height: 1; flex-shrink: 0;
+      align-self: center;
+      margin-bottom: calc(clamp(8px, 1.2vw, 12px) * 2 + clamp(0.7rem, 0.95vw, 0.82rem) + clamp(0.6rem, 0.78vw, 0.68rem));
+    }
+    #s5eq-arrow-block {
+      display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;
+      align-self: center;
+      margin-bottom: calc(clamp(8px, 1.2vw, 12px) * 2 + clamp(0.7rem, 0.95vw, 0.82rem) + clamp(0.6rem, 0.78vw, 0.68rem));
+    }
+    .s5eq-circle-output { border-color: rgba(232,105,154,0.4); background: rgba(232,105,154,0.06); }
+    #s5eq-output .s5eq-circle-label { color: rgba(232,105,154,0.9); }
+ 
+    /* ── SCENE 6: MAP EXPLORER ── */
+    #scene-6 .scene-graphic {
+      background: var(--color-bg); position: relative;
+      display: flex; align-items: stretch;
+    }
+    #s7-map-container {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center; z-index: 1;
+    }
+    .s7-map-layer {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; opacity: 0; transition: opacity 0.8s ease;
+    }
+    .s7-map-layer.active { opacity: 1; }
+    .s7-map-layer.prediction { z-index: 2; }
+ 
+    /* Left info panel */
+    #s7-info-panel {
+      position: absolute;
+      top: 5vh; left: 3vw;
+      z-index: 10;
+      width: clamp(240px, 22vw, 320px);
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    #s7-panel-title {
+      font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 300;
+      color: var(--color-text-primary); letter-spacing: -0.01em; line-height: 1.2;
+    }
+    #s7-panel-sub {
+      font-size: clamp(0.7rem, 0.9vw, 0.78rem); font-weight: 300;
+      color: rgba(232,244,248,0.45); line-height: 1.6; letter-spacing: 0.02em;
+    }
+    #s7-active-info {
+      margin-top: 4px;
+      background: rgba(10,22,40,0.7);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--c-border); border-radius: 4px;
+      padding: 16px 18px;
+    }
+    #s7-text-content { position: relative; min-height: 160px; }
+    .s7-info-pane {
+      position: absolute; top: 0; left: 0; width: 100%;
+      opacity: 0; pointer-events: none; transform: translateY(6px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .s7-info-pane.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .s7-info-pane h4 {
+      font-size: 0.88rem; font-weight: 500; color: var(--color-text-primary);
+      margin-bottom: 10px; letter-spacing: 0.02em;
+    }
+    .s7-why-title {
+      font-size: 0.58rem !important; font-weight: 600 !important;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--color-text-secondary) !important; margin-bottom: 5px !important;
+    }
+    .s7-info-pane p {
+      font-size: 0.78rem; font-weight: 300; color: rgba(232,244,248,0.75);
+      line-height: 1.62; margin-bottom: 8px;
+    }
+    .s7-info-pane p strong { font-weight: 500; color: var(--color-text-primary); }
+ 
+    /* Right tabs panel — stops above dig deeper button */
+    #s7-tabs-panel {
+      position: absolute;
+      top: 0; right: 0; bottom: 80px;
+      z-index: 10;
+      width: clamp(160px, 15vw, 200px);
+      background: rgba(10,22,40,0.75);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-left: 1px solid var(--c-border);
+      display: flex; flex-direction: column;
+      align-items: stretch; justify-content: stretch;
+      padding: 0; gap: 0;
+      overflow: hidden;
+    }
+    .s7-tab {
+      position: relative;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(74,158,202,0.08);
+      color: rgba(232,244,248,0.45);
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: var(--font-body);
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: center;
+      overflow: hidden;
+    }
+    .s7-tab:last-child { border-bottom: none; }
+    .s7-tab-inner {
+      padding: 7px 14px;
+      display: flex; flex-direction: column; gap: 2px;
+      width: 100%;
+    }
+    .s7-tab-num {
+      font-size: 0.48rem; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(74,158,202,0.35);
+      transition: color 0.25s ease;
+    }
+    .s7-tab-name {
+      font-size: clamp(0.6rem, 0.78vw, 0.72rem); font-weight: 400;
+      letter-spacing: 0.04em; color: rgba(232,244,248,0.45);
+      transition: color 0.25s ease; line-height: 1.2;
+    }
+    .s7-tab-bar {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--tab-color, rgba(74,158,202,0.4));
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+    .s7-tab:hover .s7-tab-name { color: rgba(232,244,248,0.75); }
+    .s7-tab:hover .s7-tab-bar { opacity: 0.5; }
+    .s7-tab.active { background: rgba(74,158,202,0.06); }
+    .s7-tab.active .s7-tab-bar { opacity: 1; }
+    .s7-tab.active .s7-tab-num { color: var(--tab-color, rgba(74,158,202,0.7)); }
+    .s7-tab.active .s7-tab-name { color: var(--color-text-primary); font-weight: 500; }
+ 
+    /* ── SCENE 7: WHY IT MATTERS — 3 panel cards ── */
+    #scene-7 .scene-graphic {
+      background: var(--color-bg);
+      display: flex; align-items: stretch; justify-content: center;
+      overflow: hidden;
+    }
+    #s7w-bg-overlay {
+      position: absolute; inset: 0; z-index: 0;
+      background: url('assets/images/ant_coast.jpg') center / cover no-repeat;
+      opacity: 0.06;
+    }
+    #s7w-cards {
+      position: relative; z-index: 2;
+      display: flex; align-items: stretch;
+      width: 100%; height: 100%;
+      padding: 0;
+    }
+    .s7w-card {
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: flex-start;
+      padding: clamp(28px, 4vh, 52px) clamp(24px, 3.5vw, 48px);
+      gap: 14px;
+      position: relative;
+      overflow-y: auto;
+    }
+    .s7w-card-divider {
+      width: 1px;
+      background: rgba(74,158,202,0.12);
+      flex-shrink: 0;
+      align-self: stretch;
+      margin: 6vh 0;
+    }
+    .s7w-card-icon {
+      width: clamp(40px, 4.5vw, 54px);
+      height: clamp(40px, 4.5vw, 54px);
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+    .s7w-card-icon svg { width: 100%; height: 100%; }
+    .s7w-card-label {
+      font-size: 0.6rem; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--color-text-secondary);
+    }
+    .s7w-card-title {
+      font-size: clamp(1.05rem, 1.7vw, 1.4rem); font-weight: 300;
+      color: var(--color-text-primary); line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+    .s7w-card-body {
+      font-size: clamp(0.76rem, 1vw, 0.88rem); font-weight: 300;
+      color: rgba(232,244,248,0.6); line-height: 1.72;
+    }
+    .s7w-card-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 3px;
+      display: block;
+      margin-top: 4px;
+      opacity: 0.85;
+      border: 1px solid rgba(74,158,202,0.1);
+    }
+    .s7w-card-slideshow {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      position: relative;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+      border: 1px solid rgba(74,158,202,0.1);
+    }
+    .s7w-slide {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .s7w-slide.active { opacity: 0.85; }
+ 
+    /* ── PLACEHOLDERS ── */
+    .scene-placeholder {
+      min-height: 100vh; background: var(--color-bg);
+      display: flex; align-items: center; justify-content: center; border-top: none;
+    }
+    .scene-placeholder-label {
+      font-size: .7rem; letter-spacing: .16em;
+      text-transform: uppercase; color: rgba(74,158,202,.35);
+    }
+ 
+    /* ── PROGRESS DOTS ── */
+    #progress-dots {
+      position: fixed; right: 22px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px; z-index: 200;
+    }
+    .progress-dot {
+      width: var(--dot-size); height: var(--dot-size);
+      border-radius: 50%; background: transparent;
+      border: 1.5px solid var(--c-ice-shadow); cursor: pointer;
+      transition: background .22s, border-color .22s, transform .22s;
+    }
+    .progress-dot:hover { border-color: var(--color-text-secondary); transform: scale(1.25); }
+    .progress-dot.active { background: var(--color-text-secondary); border-color: var(--color-text-secondary); transform: scale(1.15); }
+ 
+    /* ── DIG DEEPER ── */
+    #dig-deeper-tooltip {
+      position: fixed; bottom: 78px; right: 30px; z-index: 201;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.5s ease, transform 0.5s ease, bottom 0.3s ease;
+      pointer-events: none;
+    }
+    #dig-deeper-tooltip.visible { opacity: 1; transform: translateY(0); }
+    #dig-deeper-tooltip span { font-size: 0.68rem; font-weight: 400; letter-spacing: 0.06em; color: rgba(232,244,248,0.6); white-space: nowrap; }
+    #dig-deeper-tooltip svg { margin-right: 14px; }
+    #dig-deeper-btn {
+      position: fixed; bottom: 30px; right: 30px; z-index: 200;
+      background: var(--color-dig-deeper); color: var(--color-text-primary);
+      border: none; border-radius: 3px; padding: 11px 20px;
+      font-family: var(--font-body); font-size: .75rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+      opacity: 0; pointer-events: none; transform: translateY(6px);
+      transition: opacity .3s, transform .3s, background .18s, bottom .3s;
+    }
+    #dig-deeper-btn:hover { background: var(--c-teal-light); }
+    #dig-deeper-btn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    #dig-deeper-btn.raised { bottom: 80px; }
+    #dig-deeper-panel {
+      position: fixed; top: 0; right: 0;
+      width: min(var(--panel-width), 92vw); height: 100vh;
+      background: var(--c-bg-panel); border-left: 1px solid var(--c-border);
+      z-index: 300; transform: translateX(100%);
+      transition: transform .38s cubic-bezier(.25,.46,.45,.94);
+      overflow-y: auto; padding: 44px 28px 40px;
+    }
+    #dig-deeper-panel.open { transform: translateX(0); }
+    #dig-deeper-close {
+      position: absolute; top: 14px; right: 14px;
+      background: none; border: none; color: rgba(74,158,202,.6);
+      font-size: 1.3rem; cursor: pointer; padding: 4px 8px; transition: color .18s;
+    }
+    #dig-deeper-close:hover { color: var(--color-text-primary); }
+    #dig-deeper-panel h3 { font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 1.4rem; }
+    #dig-deeper-content { font-size: .88rem; color: rgba(232,244,248,.7); line-height: 1.78; }
+    body.panel-open #dig-deeper-btn { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+ 
+  <!-- ══ SCENE 1: INTRO ══ -->
+  <section class="scene" id="scene-1">
+    <div class="scene-graphic" id="scene-1-graphic">
+      <div class="globe-fallback" aria-hidden="true"></div>
+      <video id="globe-video" autoplay muted loop playsinline preload="auto">
+        <source src="assets/video/ant_sea_ice_globe.mp4" type="video/mp4">
+      </video>
+      <div class="scene-overlay" aria-hidden="true"></div>
+      <div id="svg-flecks-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 428.21 348"
+          preserveAspectRatio="xMidYMid meet"
+          style="width:100%;height:100%;position:absolute;inset:0;">
+          <defs>
+            <filter id="blob-glow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g fill="#FF8C3A" filter="url(#blob-glow)" transform="translate(214, 174) scale(0.41) translate(-265, -210)">
+            <circle cx="41.41"  cy="139.53" r="34.13"/>
+            <circle cx="115"    cy="153.81" r="43.91"/>
+            <circle cx="20.7"   cy="78.63"  r="20.7"/>
+            <circle cx="290.54" cy="255.8"  r="43.66"/>
+            <circle cx="239.68" cy="212.14" r="28.14"/>
+            <circle cx="324.68" cy="313.87" r="34.13"/>
+            <circle cx="370.58" cy="74.95"  r="30.45"/>
+            <circle cx="295.72" cy="25.93"  r="25.93"/>
+            <circle cx="255.31" cy="25.93"  r="15.63"/>
+            <circle cx="408.89" cy="94.27"  r="19.32"/>
+          </g>
+        </svg>
+      </div>
+      <div id="title-block">
+        <div class="display-title">The 0.18%</div>
+        <div class="display-subtitle">Predicting Antarctic Soil Geochemistry</div>
+      </div>
+      <div id="scroll-cue" aria-hidden="true">
+        <div class="cue-line"></div>
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+          <path d="M1 1L6 6L11 1" stroke="#4A9ECA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div id="s1-text-1" class="s1-text">
+        <p>Antarctica is buried under a dense <br>blanket of ice, spanning 14.2 million <br>square kilometers, making it <br>the largest mass of ice on Earth<br></p>
+      </div>
+      <div id="s1-text-2" class="s1-text">
+        <p><br><br>Less than <strong>0.18% of this <br>continent is ice-free</strong>. <br>And in that fraction lies almost <br>all of Antarctica's biodiversity</p>
+      </div>
+    </div>
+    <div style="height: 260vh;"></div>
+  </section>
+ 
+  <!-- ══ SCENE 2: WHY SOILS MATTER ══ -->
+  <section class="scene" id="scene-2">
+    <div class="scene-graphic" id="scene-2-graphic">
+      <!-- Soil photo bg (beats 0-2) -->
+      <div id="s2soil-bg" aria-hidden="true"></div>
+      <div id="s2soil-overlay" aria-hidden="true"></div>
+      <!-- Geo/coast bg (beats 3-6) -->
+      <div id="s2geo-bg" aria-hidden="true"></div>
+      <div id="s2geo-overlay" aria-hidden="true"></div>
+ 
+      <!-- Soil text beats + pyramid -->
+      <div id="s2soil-content">
+        <div id="s2soil-text-stack">
+          <div class="s2soil-text" id="s2soil-text-0">
+            <p>And in those exposed regions and buried deep beneath the ice, lies something most people <br>never think about.</p>
+            <p class="s2soil-em"><strong>The soil</strong></p>
+          </div>
+          <div class="s2soil-text" id="s2soil-text-1">
+            <p>These arid, gravelly soils are shaped by <br>extreme cold and dry circumstances. <br><br>These conditions have resulted in <br><strong>unique geochemistry</strong> that serves as the <br>baseline for everything that can survive here.</p>
+          </div>
+          <div class="s2soil-text s2soil-text-wide" id="s2soil-text-2">
+            <p class="s2soil-beat2-intro">Despite low biological activity relative to other ecosystems, these soils support a diverse and unique set of organisms.</p>
+            <p class="s2soil-em"><strong>Without these unique conditions and soils as a baseline, none of this life could survive</strong></p>
+          </div>
+        </div>
+        <div id="s2soil-diagram">
+          <svg id="s2soil-svg" viewBox="0 0 540 476" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <rect x="20" y="400" width="500" height="36" rx="3" fill="rgba(232,105,154,0.18)" stroke="rgba(232,105,154,0.75)" stroke-width="1.4" class="s2d-tier" data-tier="0" opacity="0"/>
+            <text x="270" y="452" text-anchor="middle" font-size="9" font-weight="600" letter-spacing="1.8" fill="rgba(232,105,154,0.95)" font-family="Helvetica Neue, sans-serif" class="s2d-tier" data-tier="0" opacity="0">SOIL CHEMISTRY</text>
+            <line x1="270" y1="400" x2="270" y2="360" stroke="rgba(232,244,248,0.15)" stroke-width="1" class="s2d-connector" data-conn="0" opacity="0"/>
+            <rect x="65" y="324" width="410" height="36" rx="3" fill="rgba(164,125,171,0.18)" stroke="rgba(164,125,171,0.7)" stroke-width="1.4" class="s2d-tier" data-tier="1" opacity="0"/>
+            <text x="270" y="376" text-anchor="middle" font-size="9" font-weight="600" letter-spacing="1.8" fill="rgba(164,125,171,0.95)" font-family="Helvetica Neue, sans-serif" class="s2d-tier" data-tier="1" opacity="0">BACTERIA, FUNGI &amp; CYANOBACTERIA</text>
+            <line x1="270" y1="324" x2="270" y2="284" stroke="rgba(232,244,248,0.15)" stroke-width="1" class="s2d-connector" data-conn="1" opacity="0"/>
+            <rect x="110" y="248" width="320" height="36" rx="3" fill="rgba(40,90,160,0.22)" stroke="rgba(60,120,200,0.65)" stroke-width="1.4" class="s2d-tier" data-tier="2" opacity="0"/>
+            <text x="270" y="300" text-anchor="middle" font-size="9" font-weight="600" letter-spacing="1.8" fill="rgba(100,160,230,0.95)" font-family="Helvetica Neue, sans-serif" class="s2d-tier" data-tier="2" opacity="0">MITES, NEMATODES &amp; TARDIGRADES</text>
+            <line x1="270" y1="248" x2="270" y2="208" stroke="rgba(232,244,248,0.15)" stroke-width="1" class="s2d-connector" data-conn="2" opacity="0"/>
+            <rect x="158" y="172" width="224" height="36" rx="3" fill="rgba(74,158,202,0.18)" stroke="rgba(74,158,202,0.65)" stroke-width="1.4" class="s2d-tier" data-tier="3" opacity="0"/>
+            <text x="270" y="224" text-anchor="middle" font-size="9" font-weight="600" letter-spacing="1.8" fill="rgba(74,158,202,0.95)" font-family="Helvetica Neue, sans-serif" class="s2d-tier" data-tier="3" opacity="0">MOSSES, LICHENS &amp; FLORA</text>
+            <line x1="270" y1="172" x2="270" y2="132" stroke="rgba(232,244,248,0.15)" stroke-width="1" class="s2d-connector" data-conn="3" opacity="0"/>
+            <rect x="200" y="96" width="140" height="36" rx="3" fill="rgba(74,202,158,0.16)" stroke="rgba(74,202,158,0.6)" stroke-width="1.4" class="s2d-tier" data-tier="4" opacity="0"/>
+            <text x="270" y="148" text-anchor="middle" font-size="9" font-weight="600" letter-spacing="1.8" fill="rgba(74,202,158,0.95)" font-family="Helvetica Neue, sans-serif" class="s2d-tier" data-tier="4" opacity="0">KRILL, ICEFISH &amp; BENTHOS</text>
+            <line x1="270" y1="96" x2="270" y2="56" stroke="rgba(232,244,248,0.15)" stroke-width="1" class="s2d-connector" data-conn="4" opacity="0"/>
+            <rect x="220" y="20" width="100" height="36" rx="3" fill="rgba(232,196,74,0.16)" stroke="rgba(232,196,74,0.6)" stroke-width="1.4" class="s2d-tier" data-tier="5" opacity="0"/>
+            <text x="270" y="72" text-anchor="middle" font-size="9" font-weight="600" letter-spacing="1.8" fill="rgba(232,196,74,0.95)" font-family="Helvetica Neue, sans-serif" class="s2d-tier" data-tier="5" opacity="0">SEALS, WHALES &amp; PENGUINS</text>
+          </svg>
+        </div>
+      </div>
+ 
+      <!-- Geo beats (beats 3-6): same sticky graphic, cross-fades -->
+      <div id="s2geo-beat-a">
+        <p class="s2geo-hook">Thousands of expeditions have been made over a century <br>of Antarctic research</p>
+      </div>
+      <div id="s2geo-beat-a2">
+        <p class="s2geo-hook"><span class="s2geo-hook-em"><strong>And yet the geochemistry of these soils remains largely unmapped</strong></span></p>
+      </div>
+      <div id="s2geo-beat-a3">
+        <p class="s2geo-hook">These soils are <strong>barometers of environmental change</strong>. <br>If we can't understand them, we can't track what's changing, <br>or what's being lost.</p>
+      </div>
+      <div id="s2geo-beat-b">
+        <div id="s2geo-photo-col">
+          <img src="assets/images/soil_core.jpg" alt="Antarctic soil core profile" id="s2geo-photo-img"/>
+        </div>
+        <div id="s2geo-props-col">
+          <p class="s2geo-props-title">What Soil Chemistry Reveals</p>
+          <p class="s2geo-props-body">Soil is a chemical record of an ecosystem, climate, and geology of the area. <br><br>It's made up of dozens of unique chemical properties that give us specific <br>insights into different aspects of Antarctic conditions</p>
+          <div class="s2geo-bubbles">
+            <span class="s2geo-bubble">pH &amp; Electrical Conductivity</span>
+            <span class="s2geo-bubble">Water-Soluble Ions</span>
+            <span class="s2geo-bubble">Nutrient Availability</span>
+            <span class="s2geo-bubble">Heavy &amp; Trace Metals</span>
+            <span class="s2geo-bubble">Isotopic Signatures</span>
+            <span class="s2geo-bubble">Total Carbon &amp; Nitrogen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height: 620vh;"></div>
+  </section>
+ 
+  <!-- ══ SCENE 3: CONDITIONS ARE CHANGING ══ -->
+  <section class="scene" id="scene-3">
+    <div class="scene-graphic">
+      <div id="scene-2-imgbg" aria-hidden="true"></div>
+      <video id="scene-2-video" muted loop playsinline preload="auto" disablepictureinpicture>
+        <source src="assets/video/ant_ice_change.mp4" type="video/mp4">
+      </video>
+      <div id="scene-2-overlay" aria-hidden="true"></div>
+      <button id="s2-play-btn" aria-label="Play video">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <polygon points="6,3 19,11 6,19" fill="currentColor"/>
+        </svg>
+      </button>
+      <div id="scene-2-title">
+        <h2>And Antarctica is changing.</h2>
+      </div>
+      <div id="scene-2-panel">
+        <p>As the climate warms, the ice is retreating and exposing soils that have been frozen for <br>thousands of years. <br><br>These soils hold valuable records of carbon, <br>microbial life, and ecosystem history. <br><br>Without geochemical baselines, we have no way <br>to track what is changing.</p>
+      </div>
+    </div>
+    <div style="height: 280vh;"></div>
+  </section>
+ 
+  <!-- ══ SCENE 4: SAMPLING ══ -->
+  <section class="scene" id="scene-4">
+    <div class="scene-graphic" id="scene-4-graphic">
+      <div id="s4-overlay" aria-hidden="true"></div>
+ 
+      <!-- Beat 0: One approach -->
+      <div class="s4-beat" id="s4-beat-0">
+        <div id="s4b-intro-text">
+          <p>One approach to understanding these soils is to take a diverse and wide array of samp les from across all 28 ice-free regions and analyzing their geochemical properties in a lab</p>
+        </div>
+        <div id="s4b-map">
+          <img src="assets/images/acbr_regions.jpg" alt="Antarctic Conservation Biogeographic Regions" id="s4b-map-img"/>
+          <p class="s4-caption">Antarctic Conservation Biogeographic Regions (ACBRs)</p>
+        </div>
+      </div>
+ 
+      <!-- Beat 1: But sampling everywhere isn't realistic -->
+      <div class="s4-beat" id="s4-beat-1">
+        <div id="s4b-photo-col">
+          <img src="assets/images/ant_fw_camp.jpg" alt="Antarctic field work" id="s4b-fieldwork-img"/>
+        </div>
+        <div id="s4b-barriers">
+          <p id="s4b-barriers-intro"><strong>But sampling everywhere isn't realistic</strong></p>
+          <ul id="s4b-barrier-list">
+            <li class="s4b-barrier-item">
+              <span class="s4b-barrier-icon" style="color:#E8699A;">$</span>
+              <div>
+                <span class="s4b-barrier-label">Expensive</span>
+                <span class="s4b-barrier-sub">Each expedition costs tens of thousands of dollars per sample site.</span>
+              </div>
+            </li>
+            <li class="s4b-barrier-item">
+              <span class="s4b-barrier-icon" style="color:#E8C44A;">⏱</span>
+              <div>
+                <span class="s4b-barrier-label">Time-consuming</span>
+                <span class="s4b-barrier-sub">Each site requires days of preparation.</span>
+              </div>
+            </li>
+            <li class="s4b-barrier-item">
+              <span class="s4b-barrier-icon" style="color:#4A9ECA;">⚑</span>
+              <div>
+                <span class="s4b-barrier-label">Logistically difficult</span>
+                <span class="s4b-barrier-sub">Extreme cold, remoteness, and limited field stations.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+ 
+      <!-- Beat 2: The reality — 171 samples -->
+      <div class="s4-beat" id="s4-beat-2">
+        <div id="s4c-text">
+          <span id="s4c-label">The reality</span>
+          <p id="s4c-headline">For the entire continent, our lab has analyzed the geochemistry of only <strong>171 samples</strong> in <strong>4 regions</strong></p>
+          <p id="s4c-sub">Ideal coverage would require thousands of samples from all 28 ACBR regions. <br><br>What we have is a mere fraction of that.</p>
+        </div>
+        <div id="s4c-map-col">
+          <div id="s4c-map-inner">
+            <div class="s3-svg-frame" id="s4c-map-frame">
+              <img src="assets/images/samples_real.svg" alt="171 actual soil samples across 4 regions" />
+            </div>
+            <p class="s4-caption">171 samples · 4 regions · 28 locations</p>
+          </div>
+          <div id="s4c-legend">
+            <div class="s4c-legend-item"><span class="s4c-legend-dot" style="background:#da3832;"></span><span class="s4c-legend-label">NW Antarctic Peninsula</span></div>
+            <div class="s4c-legend-item"><span class="s4c-legend-dot" style="background:#a47dab;"></span><span class="s4c-legend-label">Transantarctic Mountains</span></div>
+            <div class="s4c-legend-item"><span class="s4c-legend-dot" style="background:#6a9295;"></span><span class="s4c-legend-label">South Victoria Land</span></div>
+            <div class="s4c-legend-item"><span class="s4c-legend-dot" style="background:#6db85c;"></span><span class="s4c-legend-label">North Victoria Land</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height: 380vh;"></div>
+  </section>
+ 
+  <!-- ══ SCENE 5: PREDICTIONS ══ -->
+  <section class="scene" id="scene-5">
+    <div class="scene-graphic" id="scene-5-graphic">
+      <div id="s5-overlay" aria-hidden="true"></div>
+ 
+      <!-- Beat 0: Satellite data -->
+      <div id="s5-sat-beat">
+        <div id="s5d-text">
+          <span id="s5d-label">Open Source Satellite Data</span>
+          <p id="s5d-headline">Satellites can observe the physical properties of every square meter of Antarctica's surface, whether anyone has been there or not.</p>
+          <p id="s5d-sub">We have sourced 9 environmental satellite-derived spatial layers of map data</p>
+          <ul id="s5d-varlist">
+            <li>Lithology</li>
+            <li>Distance to Coast</li>
+            <li>Elevation</li>
+            <li>Mean Annual Temperature</li>
+            <li>Mean Annual Precipitation</li>
+            <li>Slope &amp; Aspect</li>
+            <li>Latitude</li>
+            <li>Longitude</li>
+          </ul>
+        </div>
+        <div id="s5d-grid">
+          <div class="s5d-grid-item" style="--delay:0.1s">
+            <img class="s5d-grid-img" src="assets/images/elevation.png" alt="Elevation"/>
+            <span class="s5d-grid-label">Elevation</span>
+          </div>
+          <div class="s5d-grid-item" style="--delay:0.5s">
+            <img class="s5d-grid-img" src="assets/images/precipitation.png" alt="Precipitation"/>
+            <span class="s5d-grid-label">Precipitation</span>
+          </div>
+          <div class="s5d-grid-item" style="--delay:0.9s">
+            <img class="s5d-grid-img" src="assets/images/contours.png" alt="Slope &amp; Aspect"/>
+            <span class="s5d-grid-label">Slope &amp; Aspect</span>
+          </div>
+          <div class="s5d-grid-item" style="--delay:1.3s">
+            <img class="s5d-grid-img" src="assets/images/lithology.png" alt="Lithology"/>
+            <span class="s5d-grid-label">Lithology</span>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Beat 1: Pivot -->
+      <div id="s5-pivot-line">
+        <p><strong>However, there is another way to look at Antarctica, <br>one that doesn't require a single expedition</strong></p>
+      </div>
+ 
+      <!-- Beat 2: Equation -->
+      <div id="s5-eq-beat">
+        <div id="s5eq-text">
+          <span id="s5eq-label">The approach</span>
+          <p id="s5eq-headline">By combining satellite data with our samples, <br>we can make <strong>predictions</strong></p>
+          <p id="s5eq-sub"><br>Machine learning algorithms learn the relationships between our satellite data and our soil samples to make predictions about the geochemistry in places we've never been before.<br></p>
+        </div>
+        <div id="s5eq-equation">
+          <div class="s5eq-term">
+            <div class="s5eq-circle" id="s5eq-c1">
+              <svg viewBox="0 0 80 80" width="80" height="80" fill="none">
+                <rect x="34" y="12" width="12" height="44" rx="6" fill="rgba(164,125,171,0.25)" stroke="rgba(164,125,171,0.85)" stroke-width="1.8"/>
+                <circle cx="40" cy="62" r="5" fill="rgba(164,125,171,0.6)"/>
+                <line x1="34" y1="30" x2="46" y2="30" stroke="rgba(164,125,171,0.4)" stroke-width="1"/>
+                <line x1="34" y1="40" x2="46" y2="40" stroke="rgba(164,125,171,0.4)" stroke-width="1"/>
+              </svg>
+            </div>
+            <span class="s5eq-circle-label">171 Soil Samples</span>
+            <span class="s5eq-circle-sub">Known Spatial Data, <br>Known Geochemistry</span>
+          </div>
+          <span class="s5eq-plus">+</span>
+          <div class="s5eq-term">
+            <div class="s5eq-circle" id="s5eq-c2">
+              <svg viewBox="0 0 80 80" width="80" height="80" fill="none">
+                <circle cx="40" cy="42" r="18" stroke="rgba(74,158,202,0.8)" stroke-width="1.8" fill="rgba(74,158,202,0.12)"/>
+                <ellipse cx="40" cy="42" rx="18" ry="7" stroke="rgba(74,158,202,0.35)" stroke-width="1" fill="none"/>
+                <line x1="40" y1="24" x2="40" y2="60" stroke="rgba(74,158,202,0.35)" stroke-width="1"/>
+                <rect x="53" y="14" width="10" height="7" rx="2" fill="rgba(74,158,202,0.3)" stroke="rgba(74,158,202,0.8)" stroke-width="1.2"/>
+                <line x1="50" y1="17" x2="53" y2="17" stroke="rgba(74,158,202,0.7)" stroke-width="2" stroke-linecap="round"/>
+                <line x1="63" y1="17" x2="66" y2="17" stroke="rgba(74,158,202,0.7)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="s5eq-circle-label">Satellite Data</span>
+            <span class="s5eq-circle-sub">Known Spatial Data, <br>Unknown Geochemistry</span>
+          </div>
+          <span class="s5eq-plus">+</span>
+          <div class="s5eq-term">
+            <div class="s5eq-circle" id="s5eq-c3">
+              <svg viewBox="0 0 80 80" width="80" height="80" fill="none">
+                <circle cx="18" cy="26" r="5" fill="rgba(232,196,74,0.25)" stroke="rgba(232,196,74,0.8)" stroke-width="1.5"/>
+                <circle cx="18" cy="40" r="5" fill="rgba(232,196,74,0.25)" stroke="rgba(232,196,74,0.8)" stroke-width="1.5"/>
+                <circle cx="18" cy="54" r="5" fill="rgba(232,196,74,0.25)" stroke="rgba(232,196,74,0.8)" stroke-width="1.5"/>
+                <circle cx="40" cy="32" r="5" fill="rgba(232,196,74,0.2)" stroke="rgba(232,196,74,0.6)" stroke-width="1.5"/>
+                <circle cx="40" cy="48" r="5" fill="rgba(232,196,74,0.2)" stroke="rgba(232,196,74,0.6)" stroke-width="1.5"/>
+                <circle cx="62" cy="40" r="6" fill="rgba(232,196,74,0.35)" stroke="rgba(232,196,74,0.9)" stroke-width="1.5"/>
+                <line x1="23" y1="26" x2="35" y2="32" stroke="rgba(232,196,74,0.25)" stroke-width="1"/>
+                <line x1="23" y1="26" x2="35" y2="48" stroke="rgba(232,196,74,0.25)" stroke-width="1"/>
+                <line x1="23" y1="40" x2="35" y2="32" stroke="rgba(232,196,74,0.25)" stroke-width="1"/>
+                <line x1="23" y1="40" x2="35" y2="48" stroke="rgba(232,196,74,0.25)" stroke-width="1"/>
+                <line x1="23" y1="54" x2="35" y2="32" stroke="rgba(232,196,74,0.25)" stroke-width="1"/>
+                <line x1="23" y1="54" x2="35" y2="48" stroke="rgba(232,196,74,0.25)" stroke-width="1"/>
+                <line x1="45" y1="32" x2="56" y2="40" stroke="rgba(232,196,74,0.35)" stroke-width="1.2"/>
+                <line x1="45" y1="48" x2="56" y2="40" stroke="rgba(232,196,74,0.35)" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <span class="s5eq-circle-label">Machine Learning</span>
+            <span class="s5eq-circle-sub">3 ML Models <br>trained on both data types</span>
+          </div>
+          <div id="s5eq-arrow-block">
+            <svg viewBox="0 0 60 24" width="60" height="24" fill="none">
+              <line x1="4" y1="12" x2="50" y2="12" stroke="rgba(232,105,154,0.7)" stroke-width="2"/>
+              <path d="M48 6 L56 12 L48 18" stroke="rgba(232,105,154,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="s5eq-term" id="s5eq-output">
+            <div class="s5eq-circle s5eq-circle-output" id="s5eq-c4">
+              <svg viewBox="0 0 80 80" width="80" height="80" fill="none">
+                <rect x="14" y="18" width="52" height="44" rx="4" fill="rgba(232,105,154,0.12)" stroke="rgba(232,105,154,0.6)" stroke-width="1.5"/>
+                <circle cx="30" cy="34" r="4" fill="rgba(232,105,154,0.8)"/>
+                <circle cx="44" cy="30" r="4" fill="rgba(232,105,154,0.8)"/>
+                <circle cx="52" cy="42" r="4" fill="rgba(232,105,154,0.8)"/>
+                <circle cx="36" cy="50" r="4" fill="rgba(232,105,154,0.8)"/>
+                <circle cx="24" cy="48" r="4" fill="rgba(232,105,154,0.8)"/>
+                <circle cx="48" cy="54" r="4" fill="rgba(232,105,154,0.8)"/>
+              </svg>
+            </div>
+            <span class="s5eq-circle-label" style="color:rgba(232,105,154,0.9);">Predicted Geochemistry</span>
+            <span class="s5eq-circle-sub">Continent-wide predicted <br>soil chemistry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height: 380vh;"></div>
+  </section>
+ 
+  <!-- ══ SCENE 6: MAP EXPLORER ══ -->
+  <section class="scene" id="scene-6">
+    <div class="scene-graphic" id="scene-6-graphic">
+      <div id="s7-map-container">
+        <img src="assets/images/clean_01_delta-15N.png" class="s7-map-layer prediction" id="s7-layer-d15n" alt="delta-15N Map">
+        <img src="assets/images/clean_02_phosphorus.png" class="s7-map-layer prediction" id="s7-layer-p" alt="Phosphorus Map">
+        <img src="assets/images/clean_03_sodium.png" class="s7-map-layer prediction" id="s7-layer-na" alt="Sodium Map">
+        <img src="assets/images/clean_04_nickel.png" class="s7-map-layer prediction" id="s7-layer-ni" alt="Nickel Map">
+        <img src="assets/images/clean_10_titanium.png" class="s7-map-layer prediction" id="s7-layer-ti" alt="Titanium Map">
+      </div>
+ 
+      <!-- Left: title + active info -->
+      <div id="s7-info-panel">
+        <h3 id="s7-panel-title">Explore the<br>Predictions</h3>
+        <p id="s7-panel-sub">Select a property to overlay ML-predicted geochemistry across the continent. Each map reveals a distinct environmental signal.</p>
+        <div id="s7-active-info">
+          <div id="s7-text-content">
+            <div id="s7-info-blank" class="s7-info-pane active">
+              <h4>Select a property →</h4>
+              <p>Each layer reveals a different environmental driver shaped by millions of years of Antarctic isolation.</p>
+            </div>
+            <div id="s7-info-d15n" class="s7-info-pane">
+              <h4>δ¹⁵N — Nitrogen Isotopes</h4>
+              <p class="s7-why-title">Why does it look like this?</p>
+              <p>Coastal hotspots trace penguin rookeries and seal colonies whose waste enriches marine-derived nitrogen. Inland deserts, devoid of animals, show none of this signature.</p>
+            </div>
+            <div id="s7-info-p" class="s7-info-pane">
+              <h4>Phosphorus (P)</h4>
+              <p class="s7-why-title">Why does it look like this?</p>
+              <p>Phosphorus concentrations track both bedrock weathering and biological inputs. Coastal zones with high animal activity show elevated values from guano and organic matter decomposition.</p>
+            </div>
+            <div id="s7-info-na" class="s7-info-pane">
+              <h4>Soluble Sodium (Na)</h4>
+              <p class="s7-why-title">Why does it look like this?</p>
+              <p>A fading ring around the continent's edges maps the marine aerosol footprint. Coastal winds deposit sea salt directly onto soil; the Transantarctic Mountains block this inland.</p>
+            </div>
+            <div id="s7-info-ni" class="s7-info-pane">
+              <h4>Nickel (Ni)</h4>
+              <p class="s7-why-title">Why does it look like this?</p>
+              <p>Nickel distribution closely follows mafic and ultramafic rock formations. Its sharp boundaries are a near-perfect trace of igneous intrusions across ice-free zones.</p>
+            </div>
+            <div id="s7-info-ti" class="s7-info-pane">
+              <h4>Titanium (Ti)</h4>
+              <p class="s7-why-title">Why does it look like this?</p>
+              <p>Stark jagged boundaries trace the Ferrar Dolerite volcanic formations almost perfectly. Chemical weathering is so slow here that bedrock lithology dominates the signal entirely.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Right: vertical tab strip -->
+      <div id="s7-tabs-panel">
+        <button class="s7-tab" data-target="d15n" style="--tab-color: #e87878;">
+          <div class="s7-tab-inner"><span class="s7-tab-num">01</span><span class="s7-tab-name">Nitrogen Isotopes</span></div>
+          <div class="s7-tab-bar"></div>
+        </button>
+        <button class="s7-tab" data-target="p" style="--tab-color: #78c8a0;">
+          <div class="s7-tab-inner"><span class="s7-tab-num">02</span><span class="s7-tab-name">Phosphorus</span></div>
+          <div class="s7-tab-bar"></div>
+        </button>
+        <button class="s7-tab" data-target="na" style="--tab-color: #4A9ECA;">
+          <div class="s7-tab-inner"><span class="s7-tab-num">03</span><span class="s7-tab-name">Sodium</span></div>
+          <div class="s7-tab-bar"></div>
+        </button>
+        <button class="s7-tab" data-target="ni" style="--tab-color: #c4a47d;">
+          <div class="s7-tab-inner"><span class="s7-tab-num">04</span><span class="s7-tab-name">Nickel</span></div>
+          <div class="s7-tab-bar"></div>
+        </button>
+        <button class="s7-tab" data-target="ti" style="--tab-color: #9ab0c8;">
+          <div class="s7-tab-inner"><span class="s7-tab-num">05</span><span class="s7-tab-name">Titanium</span></div>
+          <div class="s7-tab-bar"></div>
+        </button>
+      </div>
+    </div>
+    <div style="height: 20vh;"></div>
+  </section>
+ 
+  <!-- ══ SCENE 7: WHY IT MATTERS ══ -->
+  <section class="scene" id="scene-7">
+    <div class="scene-graphic" id="scene-7-graphic">
+ 
+      <div id="s7w-bg-overlay" aria-hidden="true"></div>
+ 
+      <!-- 3-panel card layout -->
+      <div id="s7w-cards">
+ 
+        <div class="s7w-card" id="s7w-card-1">
+          <div class="s7w-card-icon">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="20" stroke="rgba(74,158,202,0.6)" stroke-width="1.5" fill="none"/>
+              <path d="M28 8 Q36 20 28 28 Q20 36 28 48" stroke="rgba(74,158,202,0.5)" stroke-width="1.2" fill="none"/>
+              <line x1="8" y1="28" x2="48" y2="28" stroke="rgba(74,158,202,0.35)" stroke-width="1"/>
+              <line x1="28" y1="8" x2="28" y2="48" stroke="rgba(74,158,202,0.35)" stroke-width="1"/>
+              <circle cx="28" cy="28" r="3" fill="#4A9ECA" opacity="0.9"/>
+              <path d="M14 20 Q28 14 42 20" stroke="rgba(74,158,202,0.25)" stroke-width="1" fill="none"/>
+              <path d="M12 36 Q28 42 44 36" stroke="rgba(74,158,202,0.25)" stroke-width="1" fill="none"/>
+            </svg>
+          </div>
+          <p class="s7w-card-label">Climate Science</p>
+          <h3 class="s7w-card-title">Tracking a changing continent</h3>
+          <p class="s7w-card-body">As ice retreats and new soils emerge, we have no baseline for what they contain. Geochemical predictions give us that baseline — so we can measure what is being lost or created as the planet warms.</p>
+          <div class="s7w-card-slideshow" id="s7w-slideshow">
+            <img src="assets/images/ice_retreat_1.png" class="s7w-slide active" alt="Ice retreat 1"/>
+            <img src="assets/images/ice_retreat_2.png" class="s7w-slide" alt="Ice retreat 2"/>
+            <img src="assets/images/ice_retreat_3.png" class="s7w-slide" alt="Ice retreat 3"/>
+            <img src="assets/images/ice_retreat_4.png" class="s7w-slide" alt="Ice retreat 4"/>
+            <img src="assets/images/ice_retreat_5.png" class="s7w-slide" alt="Ice retreat 5"/>
+            <img src="assets/images/ice_retreat_6.png" class="s7w-slide" alt="Ice retreat 6"/>
+          </div>
+        </div>
+ 
+        <div class="s7w-card-divider"></div>
+ 
+        <div class="s7w-card" id="s7w-card-2">
+          <div class="s7w-card-icon">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 44 L28 12 L46 44" stroke="rgba(74,202,158,0.6)" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+              <line x1="10" y1="44" x2="46" y2="44" stroke="rgba(74,202,158,0.4)" stroke-width="1.2"/>
+              <circle cx="28" cy="12" r="3" fill="rgba(74,202,158,0.9)"/>
+              <circle cx="20" cy="30" r="2" fill="rgba(74,202,158,0.5)"/>
+              <circle cx="36" cy="30" r="2" fill="rgba(74,202,158,0.5)"/>
+              <line x1="28" y1="12" x2="20" y2="30" stroke="rgba(74,202,158,0.3)" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="28" y1="12" x2="36" y2="30" stroke="rgba(74,202,158,0.3)" stroke-width="1" stroke-dasharray="2 2"/>
+            </svg>
+          </div>
+          <p class="s7w-card-label">Field Science</p>
+          <h3 class="s7w-card-title">Smarter expeditions</h3>
+          <p class="s7w-card-body">Continent-wide prediction maps tell future researchers exactly where the most scientifically valuable sites are — saving time, money, and the enormous logistical costs of Antarctic fieldwork.</p>
+          <img src="assets/images/ant_field_work.png" alt="Antarctic field work" class="s7w-card-img"/>
+        </div>
+ 
+        <div class="s7w-card-divider"></div>
+ 
+        <div class="s7w-card" id="s7w-card-3">
+          <div class="s7w-card-icon">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="28" r="12" stroke="rgba(232,196,74,0.55)" stroke-width="1.5" fill="none"/>
+              <circle cx="38" cy="28" r="10" stroke="rgba(232,196,74,0.4)" stroke-width="1.5" fill="rgba(232,196,74,0.04)"/>
+              <line x1="30" y1="28" x2="26" y2="28" stroke="rgba(232,196,74,0.5)" stroke-width="1" stroke-dasharray="2 2"/>
+              <circle cx="18" cy="28" r="3.5" fill="rgba(74,158,202,0.8)"/>
+              <circle cx="38" cy="28" r="3" fill="rgba(232,196,74,0.7)"/>
+              <circle cx="38" cy="21" r="1.5" fill="rgba(232,196,74,0.35)"/>
+              <circle cx="44" cy="26" r="1.5" fill="rgba(232,196,74,0.25)"/>
+            </svg>
+          </div>
+          <p class="s7w-card-label">Astrobiology</p>
+          <h3 class="s7w-card-title">A window to other worlds</h3>
+          <p class="s7w-card-body">Antarctic ice-free soils are our closest analogue on Earth to the surface of Mars. Understanding what survives here — and why — is a guide to where we might search for life beyond our planet.</p>
+          <img src="assets/images/ant_dry_valley.png" alt="Antarctic dry valley" class="s7w-card-img"/>
+        </div>
+ 
+      </div>
+    </div>
+    <div style="height: 20vh;"></div>
+  </section>
+ 
+  <!-- ══ SCENE 8: CREDITS ══ -->
+  <section class="scene scene-placeholder" id="scene-8">
+    <span class="scene-placeholder-label">Scene 8 — Credits and Acknowledgements</span>
+  </section>
+ 
+  <nav id="progress-dots" aria-label="Scene navigation"></nav>
+  <div id="dig-deeper-tooltip" aria-hidden="true">
+    <span>Want to learn more?</span>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M9 3 L9 13 M5 10 L9 14 L13 10" stroke="rgba(74,158,202,0.7)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <button id="dig-deeper-btn" aria-controls="dig-deeper-panel">Dig Deeper</button>
+  <aside id="dig-deeper-panel" role="complementary">
+    <button id="dig-deeper-close" aria-label="Close panel">&#x2715;</button>
+    <h3>Dig Deeper</h3>
+    <div id="dig-deeper-content"></div>
+  </aside>
+ 
+  <script>
+  (() => {
+    /* ── Scene 1 video ── */
+    const video = document.getElementById('globe-video');
+    if (video) {
+      video.play().catch(() => { video.style.display = 'none'; });
+      video.addEventListener('error', () => { video.style.display = 'none'; }, true);
+    }
+ 
+    /* ── Scene 3 video ── */
+    const vid2  = document.getElementById("scene-2-video");
+    const imgbg = document.getElementById("scene-2-imgbg");
+    if (vid2) {
+      vid2.addEventListener("error", () => {
+        vid2.style.display = "none";
+        if (imgbg) imgbg.classList.add("show");
+      }, true);
+    }
+ 
+    /* ── Scroll cue ── */
+    const scrollCue = document.getElementById('scroll-cue');
+    window.addEventListener('scroll', () => {
+      scrollCue.classList.toggle('hidden', window.scrollY > 40);
+    }, { passive: true });
+ 
+    /* ── Flecks ── */
+    const flecksContainer = document.getElementById('svg-flecks-container');
+    function startFlecks() { flecksContainer.classList.add('is-active'); }
+    function stopFlecks()  { flecksContainer.classList.remove('is-active'); }
+ 
+    /* ── Progress dots (9 scenes) ── */
+    const dotsEl = document.getElementById('progress-dots');
+    for (let i = 1; i <= 9; i++) {
+      const d = document.createElement('button');
+      d.className = 'progress-dot' + (i === 1 ? ' active' : '');
+      d.dataset.scene = i;
+      d.setAttribute('aria-label', `Go to scene ${i}`);
+      d.addEventListener('click', () =>
+        document.getElementById(`scene-${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      );
+      dotsEl.appendChild(d);
+    }
+    function setDot(n) {
+      document.querySelectorAll('.progress-dot')
+        .forEach(d => d.classList.toggle('active', +d.dataset.scene === n));
+    }
+ 
+    /* ── Dig deeper panel ── */
+    const digBtn     = document.getElementById('dig-deeper-btn');
+    const digPanel   = document.getElementById('dig-deeper-panel');
+    const digTooltip = document.getElementById('dig-deeper-tooltip');
+    let tooltipShown = false;
+    let tooltipTimer = null;
+ 
+    function showTooltip() {
+      if (tooltipShown) return;
+      tooltipShown = true;
+      digTooltip?.classList.add('visible');
+      tooltipTimer = setTimeout(() => digTooltip?.classList.remove('visible'), 4000);
+    }
+    function hideTooltip() {
+      clearTimeout(tooltipTimer);
+      digTooltip?.classList.remove('visible');
+    }
+ 
+    digBtn.addEventListener('click', () => {
+      hideTooltip();
+      digPanel.classList.add('open');
+      document.body.classList.add('panel-open');
+    });
+    document.getElementById('dig-deeper-close').addEventListener('click', closePanel);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+    document.addEventListener('click', e => {
+      if (digPanel.classList.contains('open') && !digPanel.contains(e.target) && e.target !== digBtn) closePanel();
+    });
+    function closePanel() { digPanel.classList.remove('open'); document.body.classList.remove('panel-open'); }
+ 
+    /* ── Scene 1 refs ── */
+    const titleBlock = document.getElementById('title-block');
+    const scene1el   = document.getElementById('scene-1');
+    const s1text1    = document.getElementById('s1-text-1');
+    const s1text2    = document.getElementById('s1-text-2');
+ 
+    /* ── Scene 3 (climate) refs ── */
+    const s2title   = document.getElementById('scene-2-title');
+    const s2panel   = document.getElementById('scene-2-panel');
+    const scene3el  = document.getElementById('scene-3');
+    const s2playBtn = document.getElementById('s2-play-btn');
+    let s2triggered = false;
+    let s2playing   = false;
+ 
+    function playVid2() {
+      if (!vid2) return;
+      vid2.muted = true;
+      const p = vid2.play();
+      if (p !== undefined) {
+        p.then(() => { s2playing = true; s2playBtn?.classList.add('hidden'); })
+         .catch(() => { s2playing = false; });
+      }
+    }
+    s2playBtn?.addEventListener('click', () => { playVid2(); });
+ 
+    /* ── Scene 2 (Soils + Geo combined) ── */
+    const scene2el      = document.getElementById('scene-2');
+    const s2soilTexts   = [0,1,2].map(i => document.getElementById(`s2soil-text-${i}`));
+    const s2soilDiagram = document.getElementById('s2soil-diagram');
+    const s2soilContent = document.getElementById('s2soil-content');
+    const s2soilTiers   = document.querySelectorAll('.s2d-tier');
+    const s2soilConns   = document.querySelectorAll('.s2d-connector');
+    const s2soilBg      = document.getElementById('s2soil-bg');
+    const s2soilOverlay = document.getElementById('s2soil-overlay');
+    const s2geoBg       = document.getElementById('s2geo-bg');
+    const s2geoOverlay  = document.getElementById('s2geo-overlay');
+    const s2geoA        = document.getElementById('s2geo-beat-a');
+    const s2geoA2       = document.getElementById('s2geo-beat-a2');
+    const s2geoA3       = document.getElementById('s2geo-beat-a3');
+    const s2geoB        = document.getElementById('s2geo-beat-b');
+    let s2beat = -99;
+ 
+    function showDiagramTiers(upToTier) {
+      s2soilTiers.forEach(el => {
+        const t = parseInt(el.dataset.tier);
+        el.style.transition = `opacity 0.5s ease ${t * 0.12}s`;
+        el.style.opacity = t <= upToTier ? '1' : '0';
+      });
+      s2soilConns.forEach(el => {
+        const c = parseInt(el.dataset.conn);
+        el.style.transition = `opacity 0.4s ease ${c * 0.12 + 0.08}s`;
+        el.style.opacity = c < upToTier ? '1' : '0';
+      });
+    }
+ 
+    function setS2Beat(beat) {
+      if (beat === s2beat) return;
+      s2beat = beat;
+ 
+      // beats 0-2: soil phase
+      const inSoilPhase = beat >= 0 && beat <= 2;
+      const inGeoPhase  = beat >= 3;
+ 
+      // soil bg
+      if (s2soilBg)      s2soilBg.style.opacity    = inSoilPhase ? '0.35' : '0';
+      if (s2soilOverlay) s2soilOverlay.style.opacity = inSoilPhase ? '1'    : '0';
+      if (s2soilContent) s2soilContent.style.opacity = inSoilPhase ? '1'    : '0';
+      // geo bg
+      if (s2geoBg)       s2geoBg.style.opacity      = inGeoPhase  ? '0.18' : '0';
+      if (s2geoOverlay)  s2geoOverlay.style.opacity  = inGeoPhase  ? '1'    : '0';
+ 
+      // soil text beats
+      s2soilTexts.forEach((el, i) => el?.classList.toggle('visible', i === beat));
+      if (beat < 0 || beat > 2) {
+        s2soilDiagram?.classList.remove('visible');
+        showDiagramTiers(-1);
+      } else if (beat === 0) {
+        s2soilDiagram?.classList.remove('visible');
+        showDiagramTiers(-1);
+      } else if (beat === 1) {
+        s2soilDiagram?.classList.add('visible');
+        showDiagramTiers(0);
+      } else if (beat === 2) {
+        s2soilDiagram?.classList.add('visible');
+        showDiagramTiers(5);
+      }
+ 
+      // geo beats
+      s2geoA?.classList.toggle('visible',  beat === 3);
+      s2geoA2?.classList.toggle('visible', beat === 4);
+      s2geoA3?.classList.toggle('visible', beat === 5);
+      s2geoB?.classList.toggle('visible',  beat === 6);
+      if (s2geoBg) s2geoBg.style.opacity = beat === 6 ? '0.06' : (inGeoPhase ? '0.18' : '0');
+    }
+ 
+    /* ── Scene 4 (Sampling) ── */
+    const scene4el  = document.getElementById('scene-4');
+    const s4beats   = [0,1,2].map(i => document.getElementById(`s4-beat-${i}`));
+    let s4beat = -99;
+ 
+    function setS4Beat(beat) {
+      if (beat === s4beat) return;
+      s4beat = beat;
+      s4beats.forEach((el, i) => el?.classList.toggle('visible', i === beat));
+    }
+ 
+    /* ── Scene 5 (Satellite + Equation) ── */
+    const scene5el    = document.getElementById('scene-5');
+    const s5satBeat   = document.getElementById('s5-sat-beat');
+    const s5pivotLine = document.getElementById('s5-pivot-line');
+    const s5eqBeat    = document.getElementById('s5-eq-beat');
+    const s5dGrid     = document.getElementById('s5d-grid');
+    let s5beat = -99;
+ 
+    function setS5Beat(beat) {
+      if (beat === s5beat) return;
+      s5beat = beat;
+      s5satBeat?.classList.toggle('visible',   beat === 0);
+      s5pivotLine?.classList.toggle('visible', beat === 1);
+      s5eqBeat?.classList.toggle('visible',    beat === 2);
+      if (s5dGrid) {
+        if (beat === 0) s5dGrid.classList.add('revealed');
+        else s5dGrid.classList.remove('revealed');
+      }
+    }
+ 
+    /* ── Scene 6 (Map explorer) ── */
+    const s7Tabs      = document.querySelectorAll('.s7-tab');
+    const s7Layers    = document.querySelectorAll('.s7-map-layer.prediction');
+    const s7Panes     = document.querySelectorAll('.s7-info-pane');
+    const s7BlankPane = document.getElementById('s7-info-blank');
+ 
+    s7Tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.target;
+        const newLayer = document.getElementById(`s7-layer-${target}`);
+        const newPane  = document.getElementById(`s7-info-${target}`);
+ 
+        // Activate new layer FIRST (before deactivating others) to avoid blank flash
+        if (newLayer) newLayer.classList.add('active');
+ 
+        // Small delay to let new layer start fading in before old one fades out
+        requestAnimationFrame(() => {
+          s7Layers.forEach(l => { if (l !== newLayer) l.classList.remove('active'); });
+        });
+ 
+        // Swap tabs
+        s7Tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+ 
+        // Swap info panes
+        s7Panes.forEach(p => p.classList.remove('active'));
+        if (newPane) newPane.classList.add('active');
+        else s7BlankPane.classList.add('active');
+      });
+    });
+ 
+    /* ── Scene 7 card 1 slideshow ── */
+    const s7wSlides = document.querySelectorAll('.s7w-slide');
+    let s7wSlideIdx = 0;
+    if (s7wSlides.length) {
+      setInterval(() => {
+        s7wSlides[s7wSlideIdx].classList.remove('active');
+        s7wSlideIdx = (s7wSlideIdx + 1) % s7wSlides.length;
+        s7wSlides[s7wSlideIdx].classList.add('active');
+      }, 2200);
+    }
+ 
+    /* ── Main scroll handler ── */
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+ 
+      /* Scene 1 */
+      if (scene1el) {
+        const depth = scrollY - scene1el.offsetTop;
+        if (depth > 60) titleBlock?.classList.add('faded');
+        else titleBlock?.classList.remove('faded');
+        if (depth > 220) s1text1?.classList.add('visible');
+        else s1text1?.classList.remove('visible');
+        if (depth > 420) { s1text2?.classList.add('visible'); startFlecks(); }
+        else { s1text2?.classList.remove('visible'); stopFlecks(); }
+      }
+ 
+      /* Scene 2 (Soils + Geo, 7 beats: 0-6) */
+      if (scene2el) {
+        const rect = scene2el.getBoundingClientRect();
+        const total = scene2el.offsetHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        if (rect.bottom <= 0 || rect.top > window.innerHeight) {
+          setS2Beat(-1);
+        } else {
+          const p = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
+          if      (p < 0.12) setS2Beat(0);
+          else if (p < 0.28) setS2Beat(1);
+          else if (p < 0.42) setS2Beat(2);
+          else if (p < 0.55) setS2Beat(3);
+          else if (p < 0.65) setS2Beat(4);
+          else if (p < 0.78) setS2Beat(5);
+          else               setS2Beat(6);
+        }
+      }
+ 
+      /* Scene 3 (Climate video) */
+      if (scene3el && vid2) {
+        const rect  = scene3el.getBoundingClientRect();
+        const total = scene3el.offsetHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        const progress = total > 0 ? Math.min(1, scrolled / total) : 0;
+        const above = rect.top > 0, below = rect.bottom <= 0;
+        if (above || below) {
+          vid2.pause(); s2playing = false;
+          s2title?.classList.remove('visible');
+          s2panel?.classList.remove('visible');
+          s2playBtn?.classList.add('hidden');
+          s2triggered = false;
+        } else if (progress < 0.33) {
+          if (!s2triggered) { s2triggered = true; playVid2(); }
+          s2playBtn?.classList.add('hidden');
+          s2title?.classList.add('visible');
+          s2panel?.classList.remove('visible');
+        } else if (progress < 0.66) {
+          s2title?.classList.remove('visible');
+          if (!s2playing) s2playBtn?.classList.remove('hidden');
+          else s2playBtn?.classList.add('hidden');
+          s2panel?.classList.remove('visible');
+        } else {
+          s2playBtn?.classList.add('hidden');
+          s2title?.classList.remove('visible');
+          s2panel?.classList.add('visible');
+        }
+      }
+ 
+      /* Scene 4 (Sampling, 3 beats: 0-2) */
+      if (scene4el) {
+        const rect = scene4el.getBoundingClientRect();
+        const total = scene4el.offsetHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        if (rect.bottom <= 0 || rect.top > window.innerHeight) {
+          setS4Beat(-1);
+        } else {
+          const p = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
+          if      (p < 0.33) setS4Beat(0);
+          else if (p < 0.66) setS4Beat(1);
+          else               setS4Beat(2);
+        }
+      }
+ 
+      /* Scene 5 (Satellite + Equation, 3 beats: 0-2) */
+      if (scene5el) {
+        const rect = scene5el.getBoundingClientRect();
+        const total = scene5el.offsetHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        if (rect.bottom <= 0 || rect.top > window.innerHeight) {
+          setS5Beat(-1);
+        } else {
+          const p = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
+          if      (p < 0.33) setS5Beat(0);
+          else if (p < 0.55) setS5Beat(1);
+          else               setS5Beat(2);
+        }
+      }
+ 
+    }, { passive: true });
+ 
+    /* ── Dot sync + dig deeper visibility ── */
+    const allScenes = Array.from({ length: 9 }, (_, i) =>
+      document.getElementById(`scene-${i + 1}`)
+    ).filter(Boolean);
+ 
+    function updateDigVisibility() {
+      const mid = window.scrollY + window.innerHeight * 0.5;
+      let activeScene = 1;
+      for (const s of allScenes) {
+        if (s.offsetTop <= mid) activeScene = parseInt(s.id.split('-')[1]);
+      }
+      const show = activeScene >= 2;
+      digBtn.classList.toggle('visible', show);
+      const isClimate = activeScene === 3;
+      digBtn.classList.toggle('raised', isClimate);
+      digBtn.style.bottom = isClimate ? '80px' : '30px';
+      if (digTooltip) digTooltip.style.bottom = isClimate ? '128px' : '78px';
+      if (show && !tooltipShown && activeScene === 2) showTooltip();
+    }
+ 
+    function updateDotFromScroll() {
+      const mid = window.scrollY + window.innerHeight * 0.5;
+      let active = 1;
+      for (const s of allScenes) {
+        if (s.offsetTop <= mid) active = parseInt(s.id.split('-')[1]);
+      }
+      setDot(active);
+      updateDigVisibility();
+    }
+ 
+    window.addEventListener('scroll', updateDotFromScroll, { passive: true });
+    updateDotFromScroll();
+ 
+    const scroller = scrollama();
+    scroller.setup({ step: '.step', offset: 0.55 })
+      .onStepEnter(({ element }) => element.classList.add('is-active'))
+      .onStepExit(({ element, direction }) => { if (direction === 'up') element.classList.remove('is-active'); });
+    window.addEventListener('resize', scroller.resize);
+  })();
+  </script>
+</body>
+</html>
