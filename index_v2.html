@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The 0.18%</title>
+  <title>The 1%</title>
   
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://unpkg.com/scrollama"></script>
@@ -79,7 +79,7 @@
     }
     #svg-flecks-container circle {
       stroke: none;
-      fill: #E8F4F8;
+      fill: rgba(232,105,154,0.9);
       opacity: 0;
     }
     #svg-flecks-container.is-active circle:nth-child(1)  { animation: blobPulse 3.1s 0.00s infinite alternate ease-in-out; }
@@ -130,7 +130,12 @@
       pointer-events: none;
       transition: opacity .4s ease;
     }
-    #scroll-cue.hidden { opacity: 0; } 
+    #scroll-cue.hidden { opacity: 0; }
+    #scroll-cue .cue-label {
+      font-size: 0.58rem; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(74,158,202,0.65);
+      margin-bottom: 2px;
+    }
     #scroll-cue .cue-line {
       width: 1px; height: 32px;
       background: linear-gradient(to bottom, transparent, var(--color-text-secondary));
@@ -143,93 +148,94 @@
       100% { transform: scaleY(1); opacity: 0; transform-origin: bottom; }
     }
  
+    /* SCENE 1 text — left/right flanking globe, both vertically centered */
     .s1-text {
       position: absolute;
       z-index: 5;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.8s ease;
-      max-width: 420px;
+      width: 20vw;
+      min-width: 180px;
+      max-width: 280px;
+      top: 50%;
+      transform: translateY(-50%);
     }
     .s1-text.visible { opacity: 1; }
     .s1-text p {
-      font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+      font-size: clamp(0.88rem, 1.4vw, 1rem);
       font-weight: 300;
       color: var(--color-text-primary);
-      line-height: 1.7;
+      line-height: 1.75;
       margin: 0;
     }
     .s1-text p strong { font-weight: 500; }
-    #s1-text-1 { top: 12vh; left: 2vw; }
-    #s1-text-2 { top: 25vh; left: 2vw; }
+    #s1-text-1 { left: 3vw; text-align: left; }
+    #s1-text-2 { right: 3vw; left: auto; text-align: right; }
  
     /* ── SCENE 2: SOILS + GEO ── */
-    #scene-2 .scene-graphic {
-      overflow: hidden;
-    }
+    #scene-2 .scene-graphic { overflow: hidden; }
+ 
     #s2soil-bg {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background: url('assets/images/antarctic_soils.jpg') center / cover no-repeat;
       z-index: 0;
       opacity: 0.35;
       transition: opacity 0.8s ease;
     }
+    /* CHANGE: lighter overlay — was rgba(10,22,40,0.55/0.30/0.65), now reduced */
     #s2soil-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
+      position: absolute; inset: 0; z-index: 1;
       background: linear-gradient(to bottom,
-        rgba(10,22,40,0.55) 0%,
-        rgba(10,22,40,0.30) 40%,
-        rgba(10,22,40,0.65) 100%);
+        rgba(10,22,40,0.28) 0%,
+        rgba(10,22,40,0.12) 40%,
+        rgba(10,22,40,0.38) 100%);
       pointer-events: none;
     }
     #s2soil-content {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(32px, 5vw, 72px);
-      padding: 0 5vw;
+      position: absolute; inset: 0; z-index: 3;
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(32px, 5vw, 72px); padding: 0 5vw;
       pointer-events: none;
     }
     #s2soil-text-stack {
       position: relative;
       width: clamp(300px, 34vw, 440px);
       height: clamp(320px, 60vh, 540px);
-      flex-shrink: 0;
-      overflow: visible;
-      margin-top: 4vh;
+      flex-shrink: 0; overflow: visible; margin-top: 4vh;
     }
     .s2soil-text {
       position: absolute;
       top: 50%; left: 0; right: 0;
       transform: translateY(-50%);
-      opacity: 0;
-      transition: opacity 0.7s ease;
-      pointer-events: none;
+      opacity: 0; transition: opacity 0.7s ease; pointer-events: none;
     }
     #s2soil-text-2 { top: 50%; transform: translateY(-50%); text-align: center; }
     .s2soil-text.visible { opacity: 1; }
     .s2soil-text-wide { min-width: 340px; max-width: 480px; margin: 0 auto; }
     .s2soil-text p {
       font-size: clamp(0.95rem, 1.55vw, 1.15rem);
-      font-weight: 300;
-      color: var(--color-text-primary);
-      line-height: 1.75;
-      margin-bottom: 0.6em;
+      font-weight: 300; color: var(--color-text-primary);
+      line-height: 1.75; margin-bottom: 0.6em;
     }
     .s2soil-text p:last-child { margin-bottom: 0; }
     .s2soil-text p strong { font-weight: 500; }
+    .s2soil-scene-label {
+      display: block;
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--color-text-secondary);
+      margin-bottom: 14px;
+    }
+ 
+    /* "The Soil" / "Without these..." reveal */
     .s2soil-em {
-      font-size: clamp(1rem, 1.6vw, 1.3rem) !important;
+      font-size: clamp(1.4rem, 2.4vw, 1.9rem) !important;
       font-weight: 300 !important;
       color: var(--color-text-secondary) !important;
       margin-top: 0.8em !important;
+      line-height: 1.25 !important;
     }
+ 
     #s2soil-text-2 .s2soil-em {
       opacity: 0;
       transition: opacity 0.8s ease 1.2s !important;
@@ -243,143 +249,64 @@
       flex: 0 0 auto;
       width: clamp(280px, 38vw, 500px);
       margin-bottom: 4vh;
-      opacity: 0;
-      transition: opacity 0.9s ease;
-      pointer-events: none;
-      position: static;
+      opacity: 0; transition: opacity 0.9s ease;
+      pointer-events: none; position: static;
     }
     #s2soil-diagram.visible { opacity: 1; }
     #s2soil-svg { width: 100%; height: auto; }
  
-    /* Geo beats (overlaid on same scene-2 graphic) */
+    /* Geo beats — UNCHANGED structure, just these two targeted tweaks */
     #s2geo-bg {
       position: absolute; inset: 0;
       background: url('assets/images/ant_coast.jpg') center / cover no-repeat;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 0.8s ease;
+      z-index: 0; opacity: 0; transition: opacity 0.8s ease;
     }
     #s2geo-overlay {
       position: absolute; inset: 0; z-index: 1;
       background: rgba(10,22,40,0.62);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.8s ease;
+      pointer-events: none; opacity: 0; transition: opacity 0.8s ease;
     }
     #s2geo-beat-a, #s2geo-beat-a2, #s2geo-beat-a3 {
       position: absolute; inset: 0; z-index: 4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 0 14vw;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-      pointer-events: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 0 14vw;
+      opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
     }
     #s2geo-beat-a.visible,
     #s2geo-beat-a2.visible,
     #s2geo-beat-a3.visible { opacity: 1; }
+ 
+    /* CHANGE: geo hooks bigger */
     .s2geo-hook {
-      font-size: clamp(1rem, 1.7vw, 1.3rem);
+      font-size: clamp(1.3rem, 2.6vw, 2.2rem);
       font-weight: 300;
       color: var(--color-text-primary);
-      line-height: 1.65;
+      line-height: 1.35;
       margin-bottom: 0.75em;
       max-width: 900px;
+      letter-spacing: -0.015em;
     }
     .s2geo-hook:last-child { margin-bottom: 0; }
     .s2geo-hook-em { color: var(--color-text-secondary); }
  
-    #s2geo-beat-b {
-      position: absolute; inset: 0; z-index: 4;
-      display: flex;
-      align-items: stretch;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-      pointer-events: none;
-      padding-left: 8vw;
-    }
-    #s2geo-beat-b.visible { opacity: 1; }
-    #s2geo-photo-col {
-      width: 40%;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-    #s2geo-photo-img {
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: top center;
-      display: block;
-    }
-    #s2geo-props-col {
-      width: 60%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 6vh 5vw 6vh 4vw;
-      overflow-y: auto;
-      border-left: 1px solid var(--c-border);
-    }
-    .s2geo-props-title {
-      font-size: clamp(1rem, 1.6vw, 1.25rem);
-      font-weight: 400;
-      color: var(--color-text-primary);
-      letter-spacing: -0.01em;
-      margin-bottom: 14px;
-    }
-    .s2geo-props-body {
-      font-size: clamp(0.88rem, 1.15vw, 1rem);
-      font-weight: 300;
-      color: var(--color-text-primary);
-      line-height: 1.7;
-      margin-bottom: 22px;
-      max-width: 650px;
-    }
-    .s2geo-bubbles {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 4px;
-    }
-    .s2geo-bubble {
-      font-size: clamp(0.72rem, 1vw, 0.84rem);
-      font-weight: 400;
-      color: rgba(74,158,202,0.9);
-      border: 1px solid rgba(74,158,202,0.35);
-      border-radius: 20px;
-      padding: 6px 14px;
-      background: rgba(74,158,202,0.07);
-      letter-spacing: 0.02em;
-      line-height: 1.3;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-    .s2geo-bubble:hover {
-      background: rgba(74,158,202,0.14);
-      border-color: rgba(74,158,202,0.6);
-    }
+    /* beat-b (soil core photo + bubbles) REMOVED — no longer in HTML */
  
-    /* ── SCENE 3: CLIMATE CHANGE ── */
+    /* ── SCENE 3: CONDITIONS ARE CHANGING ── */
     #scene-2-imgbg {
       position: absolute; inset: 0;
       background: url('assets/images/ant_mass_change.png') center / cover no-repeat;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 0.4s;
+      z-index: 0; opacity: 0; transition: opacity 0.4s;
     }
     #scene-2-imgbg.show { opacity: 1; }
     #scene-2-video {
-      position: absolute; inset: 0;
-      display: block !important;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      z-index: 1;
-      transform: scale(1.12);
-      transform-origin: center center;
+      position: absolute; inset: 0; display: block !important;
+      width: 100%; height: 100%; object-fit: cover;
+      z-index: 1; transform: scale(1.12); transform-origin: center center;
     }
+    /* CHANGE: overlay removed (was rgba 0.55 — now transparent) */
     #scene-2-overlay {
       position: absolute; inset: 0; z-index: 2;
-      background: rgba(10,22,40,0.55);
+      background: rgba(10,22,40,0);
       transition: background 1.2s ease;
     }
     #scene-2-title {
@@ -392,25 +319,27 @@
     #scene-2-title.visible { opacity: 1; transform: translateY(0); }
     #scene-2-title h2 {
       font-size: clamp(1.2rem, 2.6vw, 2rem);
-      font-weight: 300; letter-spacing: -0.02em;
-      color: var(--color-text-primary);
+      font-weight: 700; letter-spacing: -0.02em;
+      color: #000000;
       line-height: 1.25; max-width: 640px; padding: 0 24px;
     }
     #scene-2-panel {
-      position: absolute; right: 4vw; bottom: 20vh;
-      width: clamp(260px, 28vw, 380px);
-      z-index: 4;
-      background: rgba(10,22,40,0.82);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border-radius: 6px; padding: 20px 22px;
-      display: flex; flex-direction: column; gap: 0.6rem;
+      position: absolute; left: 4vw; bottom: 16vh;
+      width: clamp(260px, 28vw, 380px); z-index: 4;
+      padding: 0;
+      display: flex; flex-direction: column; gap: 0.55rem;
       opacity: 0; transform: translateY(20px);
       transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
     }
     #scene-2-panel.visible { opacity: 1; transform: translateY(0); }
+    #scene-2-panel .panel-label {
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--color-text-secondary);
+      margin-bottom: 4px; display: block;
+    }
     #scene-2-panel p {
-      font-size: clamp(0.75rem, 1.1vw, 0.85rem);
-      color: var(--color-text-primary); line-height: 1.7;
+      font-size: clamp(0.92rem, 1.3vw, 1.05rem);
+      color: var(--color-text-primary); line-height: 1.65;
       font-weight: 300; margin: 0;
     }
     #s2-play-btn {
@@ -441,15 +370,22 @@
  
     #s4-beat-0 { flex-direction: column; gap: 3vh; background: #ffffff; }
     #s4b-intro-text { max-width: 700px; text-align: center; }
+    #s4b-intro-label {
+      display: block;
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #1a6a8a; margin-bottom: 14px;
+    }
+    /* CHANGE: text above ACBR map — bigger */
     #s4b-intro-text p {
-      font-size: clamp(0.9rem, 1.45vw, 1.05rem);
+      font-size: clamp(1.15rem, 1.9vw, 1.4rem);
       font-weight: 300; color: #1a1a1a;
-      line-height: 1.75; margin-bottom: 0.7em;
+      line-height: 1.55; margin-bottom: 0.7em;
     }
     #s4b-map { display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
     #s4b-map-img {
       width: clamp(360px, 52vw, 680px); height: auto;
-      border-radius: 3px; box-shadow: 0 4px 28px rgba(0,0,0,0.5);
+      border-radius: 3px;
+      /* CHANGE: drop shadow removed */
       border: 1px solid var(--c-border);
     }
     .s4-caption {
@@ -457,44 +393,74 @@
       color: rgba(0,0,0,0.45); text-align: center;
     }
  
-    #s4-beat-1 { position: absolute; inset: 0; padding: 0; align-items: stretch; }
-    #s4b-photo-col { position: absolute; inset: 0; }
-    #s4b-fieldwork-img {
-      width: 100%; height: 100%; object-fit: cover;
-      object-position: 30% center; display: block;
+    #s4-beat-1 { 
+      position: absolute; inset: 0;
+      flex-direction: column; 
+      gap: 4vh; 
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 4vh;
+      background: transparent;
     }
-    #s4b-barriers {
-      position: absolute; right: 0; top: 0; bottom: 0;
-      width: clamp(280px, 36vw, 460px); z-index: 2;
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 5vh 4vw 5vh 3vw;
-      background: rgba(10,22,40,0.82);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border-left: 1px solid var(--c-border);
+    #s4b-fieldwork-bg {
+      position: absolute; inset: 0;
+      background: url('assets/images/ant_fw_camp.jpg') 30% center / cover no-repeat;
+      z-index: 0;
     }
-    #s4b-barriers-intro {
-      font-size: clamp(1.05rem, 1.7vw, 1.3rem);
-      font-weight: 300; color: var(--color-text-primary);
-      margin-bottom: 32px; line-height: 1.3;
+    #s4b-fieldwork-overlay { display: none; }
+    #s4b-barriers-title {
+      position: relative; z-index: 2;
+      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
     }
-    #s4b-barrier-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px; }
-    .s4b-barrier-item { display: flex; align-items: flex-start; gap: 14px; }
-    .s4b-barrier-icon { font-size: 1.25rem; line-height: 1; flex-shrink: 0; margin-top: 2px; width: 24px; text-align: center; }
-    .s4b-barrier-label { display: block; font-size: clamp(0.86rem, 1.15vw, 0.98rem); font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
-    .s4b-barrier-sub { display: block; font-size: clamp(0.7rem, 0.92vw, 0.8rem); font-weight: 300; color: rgba(232,244,248,0.65); line-height: 1.55; }
+    #s4b-circles {
+      position: relative; z-index: 2;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(24px, 4vw, 60px);
+    }
+    .s4b-circle-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .s4b-circle-ring {
+      width: clamp(90px, 10vw, 130px);
+      height: clamp(90px, 10vw, 130px);
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.6);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      text-align: center;
+    }
+    .s4b-circle-label {
+      font-size: clamp(0.7rem, 0.95vw, 0.82rem);
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: 0.03em;
+      text-align: center;
+      line-height: 1.35;
+    }
  
     /* Beat 2: The reality (171 samples) */
     #s4-beat-2 { gap: clamp(40px, 6vw, 80px); padding: 0 7vw; background: #ffffff; }
     #s4c-text { position: relative; z-index: 2; max-width: 400px; flex-shrink: 0; }
     #s4c-label {
       font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em;
-      text-transform: uppercase; color: #1a6a8a; margin-bottom: 14px;
-      display: block;
+      text-transform: uppercase; color: #1a6a8a; margin-bottom: 14px; display: block;
     }
     #s4c-headline {
       font-size: clamp(1rem, 1.7vw, 1.3rem);
-      font-weight: 300; color: #1a1a1a;
-      line-height: 1.55; margin-bottom: 16px;
+      font-weight: 300; color: #1a1a1a; line-height: 1.55; margin-bottom: 16px;
     }
     #s4c-headline strong { font-weight: 500; }
     #s4c-sub {
@@ -522,12 +488,9 @@
     #scene-5 .scene-graphic {
       background: var(--color-bg);
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      overflow: hidden;
+      align-items: center; justify-content: center; overflow: hidden;
     }
     #s5-overlay { position: absolute; inset: 0; background: var(--color-bg); z-index: 0; }
- 
-    /* Satellite beat */
     #s5-sat-beat {
       position: absolute; inset: 0; z-index: 2;
       display: flex; align-items: center; justify-content: center;
@@ -535,45 +498,28 @@
       opacity: 0; transition: opacity 0.7s ease; pointer-events: none;
     }
     #s5-sat-beat.visible { opacity: 1; }
-    #s5d-text { position: relative; z-index: 2; max-width: 380px; flex-shrink: 0; }
+    #s5d-text { position: relative; z-index: 2; max-width: 340px; flex-shrink: 0; text-align: left; }
     #s5d-label {
-      font-size: 0.62rem; font-weight: 500;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--color-text-secondary); margin-bottom: 14px;
-      display: block;
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--color-text-secondary); margin-bottom: 14px; display: block;
     }
     #s5d-headline {
       font-size: clamp(0.95rem, 1.55vw, 1.15rem);
-      font-weight: 300; color: var(--color-text-primary);
-      line-height: 1.7; margin-bottom: 12px;
+      font-weight: 300; color: var(--color-text-primary); line-height: 1.7; margin-bottom: 12px;
     }
     #s5d-headline strong { font-weight: 500; }
     #s5d-sub {
       font-size: clamp(0.78rem, 1.05vw, 0.88rem);
-      font-weight: 300; color: rgba(232,244,248,0.65);
-      line-height: 1.65; margin-bottom: 20px;
-    }
-    #s5d-varlist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; }
-    #s5d-varlist li {
-      font-size: clamp(0.74rem, 0.98vw, 0.86rem); font-weight: 400;
-      color: rgba(74,158,202,0.85); letter-spacing: 0.05em;
-      padding-left: 12px; position: relative;
-    }
-    #s5d-varlist li::before {
-      content: ''; position: absolute; left: 0;
-      top: 50%; transform: translateY(-50%);
-      width: 4px; height: 4px; border-radius: 50%; background: rgba(74,158,202,0.55);
+      font-weight: 300; color: rgba(232,244,248,0.65); line-height: 1.65;
     }
     #s5d-grid {
       position: relative; z-index: 2;
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: clamp(6px, 1vw, 12px);
-      flex-shrink: 0; width: clamp(280px, 40vw, 520px);
+      gap: clamp(6px, 1vw, 12px); flex-shrink: 0; width: clamp(280px, 40vw, 520px);
     }
     .s5d-grid-item { display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
     .s5d-grid-img {
-      width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
-      object-position: center; display: block;
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: center; display: block;
       border-radius: 2px; border: 1px solid var(--c-border);
     }
     .s5d-grid-label {
@@ -586,8 +532,6 @@
                   transform 0.7s cubic-bezier(0.22,0.61,0.36,1) var(--delay, 0s);
     }
     #s5d-grid.revealed .s5d-grid-item { opacity: 1; transform: scale(1); }
- 
-    /* Pivot line between sat and equation */
     #s5-pivot-line {
       position: absolute; inset: 0; z-index: 3;
       display: flex; align-items: center; justify-content: center;
@@ -596,33 +540,26 @@
     }
     #s5-pivot-line.visible { opacity: 1; }
     #s5-pivot-line p {
-      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      font-size: clamp(1.3rem, 2.6vw, 2.2rem);
       font-weight: 300; color: rgba(232,244,248,0.85);
-      line-height: 1.65; letter-spacing: 0.01em;
-      border-top: 1px solid var(--c-border);
-      border-bottom: 1px solid var(--c-border);
-      padding: 2rem 0; max-width: 600px;
+      line-height: 1.35; letter-spacing: -0.015em;
+      max-width: 900px; white-space: nowrap;
     }
- 
-    /* Equation beat */
     #s5-eq-beat {
       position: absolute; inset: 0; z-index: 2;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 4vh; padding: 4vh 6vw;
       opacity: 0; transition: opacity 0.7s ease; pointer-events: none;
     }
     #s5-eq-beat.visible { opacity: 1; }
     #s5eq-text { position: relative; z-index: 2; text-align: center; max-width: 640px; }
     #s5eq-label {
-      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 10px;
-      display: block;
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--color-text-secondary); margin-bottom: 10px; display: block;
     }
     #s5eq-headline {
       font-size: clamp(1.1rem, 2vw, 1.5rem);
-      font-weight: 300; color: var(--color-text-primary);
-      line-height: 1.4; margin-bottom: 10px;
+      font-weight: 300; color: var(--color-text-primary); line-height: 1.4; margin-bottom: 10px;
     }
     #s5eq-sub {
       font-size: clamp(0.82rem, 1.15vw, 0.95rem);
@@ -638,73 +575,90 @@
       width: clamp(90px, 10vw, 128px); height: clamp(90px, 10vw, 128px);
       border-radius: 50%; border: 1.5px solid var(--c-border);
       background: rgba(10,22,40,0.6);
-      display: flex; align-items: center; justify-content: center;
-      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
     }
     .s5eq-circle svg { width: 55%; height: 55%; }
     .s5eq-circle-label {
       font-size: clamp(0.7rem, 0.95vw, 0.82rem); font-weight: 500;
-      color: var(--color-text-primary); text-align: center;
-      max-width: clamp(90px, 10vw, 140px);
+      color: var(--color-text-primary); text-align: center; max-width: clamp(90px, 10vw, 140px);
     }
     .s5eq-circle-sub {
       font-size: clamp(0.6rem, 0.78vw, 0.68rem); font-weight: 300;
-      color: rgba(232,244,248,0.45); text-align: center;
-      max-width: clamp(90px, 10vw, 140px);
+      color: rgba(232,244,248,0.45); text-align: center; max-width: clamp(90px, 10vw, 140px);
     }
     .s5eq-plus {
       font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 200;
-      color: rgba(232,244,248,0.35); line-height: 1; flex-shrink: 0;
-      align-self: center;
+      color: rgba(255,255,255,0.9); line-height: 1; flex-shrink: 0; align-self: center;
       margin-bottom: calc(clamp(8px, 1.2vw, 12px) * 2 + clamp(0.7rem, 0.95vw, 0.82rem) + clamp(0.6rem, 0.78vw, 0.68rem));
     }
     #s5eq-arrow-block {
-      display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;
-      align-self: center;
+      display: flex; align-items: center; flex-shrink: 0; padding: 0 4px; align-self: center;
       margin-bottom: calc(clamp(8px, 1.2vw, 12px) * 2 + clamp(0.7rem, 0.95vw, 0.82rem) + clamp(0.6rem, 0.78vw, 0.68rem));
     }
     .s5eq-circle-output { border-color: rgba(232,105,154,0.4); background: rgba(232,105,154,0.06); }
-    #s5eq-output .s5eq-circle-label { color: rgba(232,105,154,0.9); }
+    #s5eq-output { align-items: center; }
+    #s5eq-output .s5eq-circle-label { color: rgba(232,105,154,0.9); white-space: nowrap; }
+    #s5eq-output .s5eq-circle-sub { color: rgba(232,105,154,0.65); }
+ 
+    /* Color scale legend — horizontal, bottom center */
+    #s7-colorscale {
+      position: absolute; bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex; flex-direction: row; align-items: center; gap: 8px;
+      opacity: 0; transition: opacity 0.5s ease;
+      pointer-events: none;
+      background: rgba(10,22,40,0.7);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-radius: 20px; padding: 8px 16px;
+      border: 1px solid rgba(232,244,248,0.1);
+    }
+    #s7-colorscale.visible { opacity: 1; }
+    #s7-scale-label-low, #s7-scale-label-high {
+      font-size: 0.58rem; font-weight: 500; letter-spacing: 0.1em;
+      color: rgba(232,244,248,0.7); text-transform: uppercase; white-space: nowrap;
+    }
+    #s7-scale-bar {
+      height: 10px; width: clamp(120px, 16vw, 220px);
+      border-radius: 6px;
+      border: 1px solid rgba(232,244,248,0.12);
+    }
+    #s7-scale-property {
+      font-size: 0.52rem; font-weight: 400; letter-spacing: 0.08em;
+      color: rgba(232,244,248,0.4); white-space: nowrap;
+      border-left: 1px solid rgba(232,244,248,0.12);
+      padding-left: 8px; margin-left: 2px;
+    }
  
     /* ── SCENE 6: MAP EXPLORER ── */
-    #scene-6 .scene-graphic {
-      background: var(--color-bg); position: relative;
-      display: flex; align-items: stretch;
-    }
+    #scene-6 .scene-graphic { background: var(--color-bg); position: relative; display: flex; align-items: stretch; }
     #s7-map-container {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center; z-index: 1;
     }
     .s7-map-layer {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
+      position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: cover; opacity: 0; transition: opacity 0.8s ease;
     }
     .s7-map-layer.active { opacity: 1; }
     .s7-map-layer.prediction { z-index: 2; }
- 
-    /* Left info panel */
     #s7-info-panel {
-      position: absolute;
-      top: 5vh; left: 3vw;
-      z-index: 10;
+      position: absolute; top: 5vh; left: 3vw; z-index: 10;
       width: clamp(240px, 22vw, 320px);
       display: flex; flex-direction: column; gap: 14px;
     }
     #s7-panel-title {
-      font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 300;
-      color: var(--color-text-primary); letter-spacing: -0.01em; line-height: 1.2;
+      font-size: clamp(1.4rem, 2.2vw, 1.9rem); font-weight: 600;
+      color: var(--color-text-primary); letter-spacing: -0.02em; line-height: 1.15;
     }
     #s7-panel-sub {
       font-size: clamp(0.7rem, 0.9vw, 0.78rem); font-weight: 300;
       color: rgba(232,244,248,0.45); line-height: 1.6; letter-spacing: 0.02em;
     }
     #s7-active-info {
-      margin-top: 4px;
-      background: rgba(10,22,40,0.7);
+      margin-top: 4px; background: rgba(10,22,40,0.7);
       backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border: 1px solid var(--c-border); border-radius: 4px;
-      padding: 16px 18px;
+      border: 1px solid var(--c-border); border-radius: 4px; padding: 16px 18px;
     }
     #s7-text-content { position: relative; min-height: 160px; }
     .s7-info-pane {
@@ -727,103 +681,80 @@
       line-height: 1.62; margin-bottom: 8px;
     }
     .s7-info-pane p strong { font-weight: 500; color: var(--color-text-primary); }
- 
-    /* Right tabs panel — stops above dig deeper button */
     #s7-tabs-panel {
       position: absolute;
-      top: 0; right: 0; bottom: 80px;
+      right: 60px; top: 50%; transform: translateY(-50%);
       z-index: 10;
-      width: clamp(160px, 15vw, 200px);
-      background: rgba(10,22,40,0.75);
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      border-left: 1px solid var(--c-border);
-      display: flex; flex-direction: column;
-      align-items: stretch; justify-content: stretch;
-      padding: 0; gap: 0;
-      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px;
+      padding: 0;
+      width: auto;
     }
     .s7-tab {
       position: relative;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(74,158,202,0.08);
-      color: rgba(232,244,248,0.45);
-      padding: 0;
-      cursor: pointer;
-      transition: all 0.25s ease;
+      width: clamp(72px, 8vw, 96px);
+      height: clamp(72px, 8vw, 96px);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      border: 2px solid rgba(255,255,255,0.6);
+      color: #1a1a1a; padding: 6px;
+      cursor: pointer; transition: all 0.22s ease;
       font-family: var(--font-body);
-      flex: 1 1 0;
-      min-height: 0;
-      display: flex; flex-direction: column;
-      align-items: flex-start; justify-content: center;
-      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
     }
-    .s7-tab:last-child { border-bottom: none; }
-    .s7-tab-inner {
-      padding: 7px 14px;
-      display: flex; flex-direction: column; gap: 2px;
-      width: 100%;
-    }
+    .s7-tab-inner { display: flex; flex-direction: column; align-items: center; gap: 2px; }
     .s7-tab-num {
-      font-size: 0.48rem; font-weight: 500; letter-spacing: 0.18em;
-      text-transform: uppercase; color: rgba(74,158,202,0.35);
-      transition: color 0.25s ease;
+      font-size: 0.44rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(0,0,0,0.35); transition: color 0.22s ease; flex-shrink: 0;
     }
     .s7-tab-name {
-      font-size: clamp(0.6rem, 0.78vw, 0.72rem); font-weight: 400;
-      letter-spacing: 0.04em; color: rgba(232,244,248,0.45);
-      transition: color 0.25s ease; line-height: 1.2;
+      font-size: clamp(0.52rem, 0.65vw, 0.62rem); font-weight: 700;
+      letter-spacing: 0.02em; color: #1a1a1a;
+      transition: color 0.22s ease; line-height: 1.2; text-align: center;
     }
-    .s7-tab-bar {
-      position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px; background: var(--tab-color, rgba(74,158,202,0.4));
-      opacity: 0; transition: opacity 0.25s ease;
+    .s7-tab-bar { display: none; }
+    .s7-tab:hover {
+      background: #ffffff;
+      border-color: rgba(232,105,154,0.5);
+      transform: scale(1.06);
+      box-shadow: 0 3px 16px rgba(232,105,154,0.2);
     }
-    .s7-tab:hover .s7-tab-name { color: rgba(232,244,248,0.75); }
-    .s7-tab:hover .s7-tab-bar { opacity: 0.5; }
-    .s7-tab.active { background: rgba(74,158,202,0.06); }
-    .s7-tab.active .s7-tab-bar { opacity: 1; }
-    .s7-tab.active .s7-tab-num { color: var(--tab-color, rgba(74,158,202,0.7)); }
-    .s7-tab.active .s7-tab-name { color: var(--color-text-primary); font-weight: 500; }
+    .s7-tab:hover .s7-tab-num { color: rgba(232,105,154,0.7); }
+    .s7-tab.active {
+      background: #ffffff;
+      border-color: rgba(232,105,154,0.9);
+      border-width: 2.5px;
+      box-shadow: 0 0 0 4px rgba(232,105,154,0.18), 0 3px 16px rgba(232,105,154,0.25);
+      transform: scale(1.1);
+    }
+    .s7-tab.active .s7-tab-num { color: rgba(232,105,154,0.8); }
+    .s7-tab.active .s7-tab-name { color: #111111; }
  
-    /* ── SCENE 7: WHY IT MATTERS — 3 panel cards ── */
+    /* ── SCENE 7: WHY IT MATTERS ── */
     #scene-7 .scene-graphic {
       background: var(--color-bg);
-      display: flex; align-items: stretch; justify-content: center;
-      overflow: hidden;
+      display: flex; align-items: stretch; justify-content: center; overflow: hidden;
     }
-    #s7w-bg-overlay {
-      position: absolute; inset: 0; z-index: 0;
-      background: url('assets/images/ant_coast.jpg') center / cover no-repeat;
-      opacity: 0.06;
-    }
+    #s7w-bg-overlay { display: none; }
     #s7w-cards {
-      position: relative; z-index: 2;
-      display: flex; align-items: stretch;
-      width: 100%; height: 100%;
-      padding: 0;
+      position: relative; z-index: 2; display: flex; align-items: stretch;
+      width: 100%; height: 100%; padding: 0;
     }
     .s7w-card {
-      flex: 1;
-      display: flex; flex-direction: column;
-      justify-content: flex-start;
-      padding: clamp(28px, 4vh, 52px) clamp(24px, 3.5vw, 48px);
-      gap: 14px;
-      position: relative;
-      overflow-y: auto;
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(48px, 8vh, 80px) clamp(24px, 3.5vw, 48px) clamp(28px, 4vh, 52px);
+      gap: 14px; position: relative; overflow-y: auto;
     }
     .s7w-card-divider {
-      width: 1px;
-      background: rgba(74,158,202,0.12);
-      flex-shrink: 0;
-      align-self: stretch;
-      margin: 6vh 0;
+      width: 1px; background: rgba(74,158,202,0.12);
+      flex-shrink: 0; align-self: stretch; margin: 6vh 0;
     }
     .s7w-card-icon {
-      width: clamp(40px, 4.5vw, 54px);
-      height: clamp(40px, 4.5vw, 54px);
-      flex-shrink: 0;
-      margin-bottom: 2px;
+      width: clamp(40px, 4.5vw, 54px); height: clamp(40px, 4.5vw, 54px);
+      flex-shrink: 0; margin-bottom: 2px;
     }
     .s7w-card-icon svg { width: 100%; height: 100%; }
     .s7w-card-label {
@@ -832,38 +763,23 @@
     }
     .s7w-card-title {
       font-size: clamp(1.05rem, 1.7vw, 1.4rem); font-weight: 300;
-      color: var(--color-text-primary); line-height: 1.25;
-      letter-spacing: -0.01em;
+      color: var(--color-text-primary); line-height: 1.25; letter-spacing: -0.01em;
     }
     .s7w-card-body {
       font-size: clamp(0.76rem, 1vw, 0.88rem); font-weight: 300;
-      color: rgba(232,244,248,0.6); line-height: 1.72;
+      color: rgba(232,244,248,0.9); line-height: 1.72;
     }
     .s7w-card-img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 3px;
-      display: block;
-      margin-top: 4px;
-      opacity: 0.85;
-      border: 1px solid rgba(74,158,202,0.1);
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 3px;
+      display: block; margin-top: 4px; opacity: 0.85; border: 1px solid rgba(74,158,202,0.1);
     }
     .s7w-card-slideshow {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      position: relative;
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 4px;
-      border: 1px solid rgba(74,158,202,0.1);
+      width: 100%; aspect-ratio: 1 / 1; position: relative;
+      border-radius: 3px; overflow: hidden; margin-top: 4px; border: 1px solid rgba(74,158,202,0.1);
     }
     .s7w-slide {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 1.2s ease;
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0; transition: opacity 1.2s ease;
     }
     .s7w-slide.active { opacity: 0.85; }
  
@@ -879,8 +795,7 @@
  
     /* ── PROGRESS DOTS ── */
     #progress-dots {
-      position: fixed; right: 22px; top: 50%;
-      transform: translateY(-50%);
+      position: fixed; right: 22px; top: 50%; transform: translateY(-50%);
       display: flex; flex-direction: column; gap: 10px; z-index: 200;
     }
     .progress-dot {
@@ -933,6 +848,31 @@
     #dig-deeper-panel h3 { font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 1.4rem; }
     #dig-deeper-content { font-size: .88rem; color: rgba(232,244,248,.7); line-height: 1.78; }
     body.panel-open #dig-deeper-btn { opacity: 0; pointer-events: none; }
+ 
+    /* Dig deeper panel content styles */
+    .dd-section { margin-bottom: 1.6rem; }
+    .dd-section:last-child { margin-bottom: 0; }
+    .dd-label {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--color-text-secondary);
+      display: block; margin-bottom: 0.5rem;
+    }
+    .dd-body {
+      font-size: 0.84rem; color: rgba(232,244,248,0.72); line-height: 1.75;
+    }
+    .dd-body p { margin-bottom: 0.75em; }
+    .dd-body p:last-child { margin-bottom: 0; }
+    .dd-body strong { font-weight: 500; color: rgba(232,244,248,0.9); }
+    .dd-ref {
+      font-size: 0.72rem; color: rgba(232,244,248,0.4);
+      line-height: 1.6; padding-left: 1em; text-indent: -1em;
+      margin-bottom: 0.5em;
+    }
+    .dd-ref:last-child { margin-bottom: 0; }
+    .dd-rule {
+      height: 1px; background: rgba(74,158,202,0.12);
+      margin: 1.2rem 0;
+    }
   </style>
 </head>
 <body>
@@ -970,32 +910,31 @@
         </svg>
       </div>
       <div id="title-block">
-        <div class="display-title">The 0.18%</div>
+        <div class="display-title">The 1%</div>
         <div class="display-subtitle">Predicting Antarctic Soil Geochemistry</div>
       </div>
       <div id="scroll-cue" aria-hidden="true">
+        <span class="cue-label">Scroll</span>
         <div class="cue-line"></div>
         <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
           <path d="M1 1L6 6L11 1" stroke="#4A9ECA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div id="s1-text-1" class="s1-text">
-        <p>Antarctica is buried under a dense <br>blanket of ice, spanning 14.2 million <br>square kilometers, making it <br>the largest mass of ice on Earth<br></p>
+        <p>Antarctica is buried under a dense blanket of ice, spanning 14 million square kilometers making it the largest mass of ice on Earth.</p>
       </div>
       <div id="s1-text-2" class="s1-text">
-        <p><br><br>Less than <strong>0.18% of this <br>continent is ice-free</strong>. <br>And in that fraction lies almost <br>all of Antarctica's biodiversity</p>
+        <p>Less than <strong>1% of this continent is ice-free</strong>. And in that fraction lies <strong>almost all</strong> of Antarctica's biodiversity.</p>
       </div>
     </div>
-    <div style="height: 260vh;"></div>
+    <div style="height: 360vh;"></div>
   </section>
  
   <!-- ══ SCENE 2: WHY SOILS MATTER ══ -->
   <section class="scene" id="scene-2">
     <div class="scene-graphic" id="scene-2-graphic">
-      <!-- Soil photo bg (beats 0-2) -->
       <div id="s2soil-bg" aria-hidden="true"></div>
       <div id="s2soil-overlay" aria-hidden="true"></div>
-      <!-- Geo/coast bg (beats 3-6) -->
       <div id="s2geo-bg" aria-hidden="true"></div>
       <div id="s2geo-overlay" aria-hidden="true"></div>
  
@@ -1003,18 +942,20 @@
       <div id="s2soil-content">
         <div id="s2soil-text-stack">
           <div class="s2soil-text" id="s2soil-text-0">
-            <p>And in those exposed regions and buried deep beneath the ice, lies something most people <br>never think about.</p>
+            <span class="s2soil-scene-label">THE ECOSYSTEM</span>
+            <p>And in those exposed regions, buried deep beneath the ice, lies the substance that most people <br>never think about.</p>
             <p class="s2soil-em"><strong>The soil</strong></p>
           </div>
           <div class="s2soil-text" id="s2soil-text-1">
-            <p>These arid, gravelly soils are shaped by <br>extreme cold and dry circumstances. <br><br>These conditions have resulted in <br><strong>unique geochemistry</strong> that serves as the <br>baseline for everything that can survive here.</p>
+            <p>These arid, gravelly soils are shaped by <br>extreme cold and dry conditions. <br><br>This climate have created an incredibly <br><strong>unique geochemistry</strong> that serves as the <br>baseline for everything that can survive here.</p>
           </div>
           <div class="s2soil-text s2soil-text-wide" id="s2soil-text-2">
             <p class="s2soil-beat2-intro">Despite low biological activity relative to other ecosystems, these soils support a diverse and unique set of organisms.</p>
-            <p class="s2soil-em"><strong>Without these unique conditions and soils as a baseline, none of this life could survive</strong></p>
+            <p class="s2soil-em"><strong>Without these unique soils and <br>conditions as a baseline, <br>none of this life could survive</strong></p>
           </div>
         </div>
         <div id="s2soil-diagram">
+          <!-- RESTORED: full 6-tier pyramid exactly as v13 -->
           <svg id="s2soil-svg" viewBox="0 0 540 476" xmlns="http://www.w3.org/2000/svg" fill="none">
             <rect x="20" y="400" width="500" height="36" rx="3" fill="rgba(232,105,154,0.18)" stroke="rgba(232,105,154,0.75)" stroke-width="1.4" class="s2d-tier" data-tier="0" opacity="0"/>
             <text x="270" y="452" text-anchor="middle" font-size="9" font-weight="600" letter-spacing="1.8" fill="rgba(232,105,154,0.95)" font-family="Helvetica Neue, sans-serif" class="s2d-tier" data-tier="0" opacity="0">SOIL CHEMISTRY</text>
@@ -1037,35 +978,20 @@
         </div>
       </div>
  
-      <!-- Geo beats (beats 3-6): same sticky graphic, cross-fades -->
+      <!-- Geo beats: CHANGE — beat-b (soil core / bubbles page) REMOVED -->
+      <!-- CHANGE: "Thousands of expeditions" — bold -->
       <div id="s2geo-beat-a">
-        <p class="s2geo-hook">Thousands of expeditions have been made over a century <br>of Antarctic research</p>
+        <p class="s2geo-hook"><strong>Thousands of expeditions have been made over the <br>past century in service of Antarctic geochemical <br>and environmental research</strong></p>
       </div>
       <div id="s2geo-beat-a2">
-        <p class="s2geo-hook"><span class="s2geo-hook-em"><strong>And yet the geochemistry of these soils remains largely unmapped</strong></span></p>
+        <p class="s2geo-hook"><span class="s2geo-hook-em"><strong>And yet the geochemistry of these <br>critical soils remains largely unmapped</strong></span></p>
       </div>
+      <!-- CHANGE: "barometers" line condensed to fit one line -->
       <div id="s2geo-beat-a3">
-        <p class="s2geo-hook">These soils are <strong>barometers of environmental change</strong>. <br>If we can't understand them, we can't track what's changing, <br>or what's being lost.</p>
-      </div>
-      <div id="s2geo-beat-b">
-        <div id="s2geo-photo-col">
-          <img src="assets/images/soil_core.jpg" alt="Antarctic soil core profile" id="s2geo-photo-img"/>
-        </div>
-        <div id="s2geo-props-col">
-          <p class="s2geo-props-title">What Soil Chemistry Reveals</p>
-          <p class="s2geo-props-body">Soil is a chemical record of an ecosystem, climate, and geology of the area. <br><br>It's made up of dozens of unique chemical properties that give us specific <br>insights into different aspects of Antarctic conditions</p>
-          <div class="s2geo-bubbles">
-            <span class="s2geo-bubble">pH &amp; Electrical Conductivity</span>
-            <span class="s2geo-bubble">Water-Soluble Ions</span>
-            <span class="s2geo-bubble">Nutrient Availability</span>
-            <span class="s2geo-bubble">Heavy &amp; Trace Metals</span>
-            <span class="s2geo-bubble">Isotopic Signatures</span>
-            <span class="s2geo-bubble">Total Carbon &amp; Nitrogen</span>
-          </div>
-        </div>
+        <p class="s2geo-hook">These soils are <strong>barometers of environmental change</strong> <br>if we can't gain a good understanding of them, <br>we can't track what's changing, and what's being lost</p>
       </div>
     </div>
-    <div style="height: 620vh;"></div>
+    <div style="height: 680vh;"></div>
   </section>
  
   <!-- ══ SCENE 3: CONDITIONS ARE CHANGING ══ -->
@@ -1082,10 +1008,11 @@
         </svg>
       </button>
       <div id="scene-2-title">
-        <h2>And Antarctica is changing.</h2>
+        <h2>And Antarctica <strong>IS</strong> changing.</h2>
       </div>
       <div id="scene-2-panel">
-        <p>As the climate warms, the ice is retreating and exposing soils that have been frozen for <br>thousands of years. <br><br>These soils hold valuable records of carbon, <br>microbial life, and ecosystem history. <br><br>Without geochemical baselines, we have no way <br>to track what is changing.</p>
+        <span class="panel-label">Changing Conditions</span>
+        <p>As global temperatures rise, Antarctica's <br>ice shelfs are melting and exposing soils <br>that have been buried for thousands of years. <br><br>Having geochemical baselines is critical for understanding the impacts of these changes.</p>
       </div>
     </div>
     <div style="height: 280vh;"></div>
@@ -1099,7 +1026,8 @@
       <!-- Beat 0: One approach -->
       <div class="s4-beat" id="s4-beat-0">
         <div id="s4b-intro-text">
-          <p>One approach to understanding these soils is to take a diverse and wide array of samp les from across all 28 ice-free regions and analyzing their geochemical properties in a lab</p>
+          <span id="s4b-intro-label">Approach 01 — Direct Sampling</span>
+          <p>One approach to gaining this understanding of these soils is to take a diverse array of thousands of samples from all 28 distinct <br>ice-free regions and analyzing their geochemical properties in a lab</p>
         </div>
         <div id="s4b-map">
           <img src="assets/images/acbr_regions.jpg" alt="Antarctic Conservation Biogeographic Regions" id="s4b-map-img"/>
@@ -1107,36 +1035,27 @@
         </div>
       </div>
  
-      <!-- Beat 1: But sampling everywhere isn't realistic -->
+      <!-- Beat 1: Sampling everywhere isn't realistic — image bg + centered title + 3 circles -->
       <div class="s4-beat" id="s4-beat-1">
-        <div id="s4b-photo-col">
-          <img src="assets/images/ant_fw_camp.jpg" alt="Antarctic field work" id="s4b-fieldwork-img"/>
-        </div>
-        <div id="s4b-barriers">
-          <p id="s4b-barriers-intro"><strong>But sampling everywhere isn't realistic</strong></p>
-          <ul id="s4b-barrier-list">
-            <li class="s4b-barrier-item">
-              <span class="s4b-barrier-icon" style="color:#E8699A;">$</span>
-              <div>
-                <span class="s4b-barrier-label">Expensive</span>
-                <span class="s4b-barrier-sub">Each expedition costs tens of thousands of dollars per sample site.</span>
-              </div>
-            </li>
-            <li class="s4b-barrier-item">
-              <span class="s4b-barrier-icon" style="color:#E8C44A;">⏱</span>
-              <div>
-                <span class="s4b-barrier-label">Time-consuming</span>
-                <span class="s4b-barrier-sub">Each site requires days of preparation.</span>
-              </div>
-            </li>
-            <li class="s4b-barrier-item">
-              <span class="s4b-barrier-icon" style="color:#4A9ECA;">⚑</span>
-              <div>
-                <span class="s4b-barrier-label">Logistically difficult</span>
-                <span class="s4b-barrier-sub">Extreme cold, remoteness, and limited field stations.</span>
-              </div>
-            </li>
-          </ul>
+        <div id="s4b-fieldwork-bg"></div>
+        <div id="s4b-fieldwork-overlay"></div>
+        <p id="s4b-barriers-title">But sampling everywhere just isn't realistic</p>
+        <div id="s4b-circles">
+          <div class="s4b-circle-item">
+            <div class="s4b-circle-ring">
+              <span class="s4b-circle-label">Costly expeditions &amp; lab work cost thousands</span>
+            </div>
+          </div>
+          <div class="s4b-circle-item">
+            <div class="s4b-circle-ring">
+              <span class="s4b-circle-label">Short seasons inhibit <br>field work exhibitions</span>
+            </div>
+          </div>
+          <div class="s4b-circle-item">
+            <div class="s4b-circle-ring">
+              <span class="s4b-circle-label">Remote areas further impede sampling <br>efforts</span>
+            </div>
+          </div>
         </div>
       </div>
  
@@ -1144,8 +1063,8 @@
       <div class="s4-beat" id="s4-beat-2">
         <div id="s4c-text">
           <span id="s4c-label">The reality</span>
-          <p id="s4c-headline">For the entire continent, our lab has analyzed the geochemistry of only <strong>171 samples</strong> in <strong>4 regions</strong></p>
-          <p id="s4c-sub">Ideal coverage would require thousands of samples from all 28 ACBR regions. <br><br>What we have is a mere fraction of that.</p>
+          <p id="s4c-headline">Because of these constraints, for the <br>entire continent, our lab has analyzed <br>just <strong>171 samples</strong> in <strong>4 regions</strong></p>
+          <p id="s4c-sub">Ideal coverage would require thousands <br/>of samples from all 28 ACBR regions. <br /><br /><strong>What we have is a mere fraction of that.</strong></p>
         </div>
         <div id="s4c-map-col">
           <div id="s4c-map-inner">
@@ -1170,23 +1089,11 @@
   <section class="scene" id="scene-5">
     <div class="scene-graphic" id="scene-5-graphic">
       <div id="s5-overlay" aria-hidden="true"></div>
- 
-      <!-- Beat 0: Satellite data -->
       <div id="s5-sat-beat">
         <div id="s5d-text">
-          <span id="s5d-label">Open Source Satellite Data</span>
-          <p id="s5d-headline">Satellites can observe the physical properties of every square meter of Antarctica's surface, whether anyone has been there or not.</p>
-          <p id="s5d-sub">We have sourced 9 environmental satellite-derived spatial layers of map data</p>
-          <ul id="s5d-varlist">
-            <li>Lithology</li>
-            <li>Distance to Coast</li>
-            <li>Elevation</li>
-            <li>Mean Annual Temperature</li>
-            <li>Mean Annual Precipitation</li>
-            <li>Slope &amp; Aspect</li>
-            <li>Latitude</li>
-            <li>Longitude</li>
-          </ul>
+          <span id="s5d-label">What We Do Have</span>
+          <p id="s5d-headline">Open-access satellite data can give us detailed observations of the physical properties of every square meter of Antarctica's surface.</p>
+          <p id="s5d-sub">For our purposes, we sourced 9 layers of <br>spatially-derived environmental data.</p>
         </div>
         <div id="s5d-grid">
           <div class="s5d-grid-item" style="--delay:0.1s">
@@ -1207,18 +1114,14 @@
           </div>
         </div>
       </div>
- 
-      <!-- Beat 1: Pivot -->
       <div id="s5-pivot-line">
         <p><strong>However, there is another way to look at Antarctica, <br>one that doesn't require a single expedition</strong></p>
       </div>
- 
-      <!-- Beat 2: Equation -->
       <div id="s5-eq-beat">
         <div id="s5eq-text">
           <span id="s5eq-label">The approach</span>
-          <p id="s5eq-headline">By combining satellite data with our samples, <br>we can make <strong>predictions</strong></p>
-          <p id="s5eq-sub"><br>Machine learning algorithms learn the relationships between our satellite data and our soil samples to make predictions about the geochemistry in places we've never been before.<br></p>
+          <p id="s5eq-headline">By combining our satellite data with our lab analysis <br>we can make <strong>detailed predictions about soil geochemistry</strong></p>
+          <p id="s5eq-sub"><br>Machine learning algorithms can be used to learn the relationships between our different <br>data sources to make guesses about the conditions in places we've never been before<br></p>
         </div>
         <div id="s5eq-equation">
           <div class="s5eq-term">
@@ -1289,8 +1192,8 @@
                 <circle cx="48" cy="54" r="4" fill="rgba(232,105,154,0.8)"/>
               </svg>
             </div>
-            <span class="s5eq-circle-label" style="color:rgba(232,105,154,0.9);">Predicted Geochemistry</span>
-            <span class="s5eq-circle-sub">Continent-wide predicted <br>soil chemistry</span>
+            <span class="s5eq-circle-label" style="color:rgba(232,105,154,0.9);">New Predictions</span>
+            <span class="s5eq-circle-sub">Continent-wide predicted soil chemistry</span>
           </div>
         </div>
       </div>
@@ -1308,47 +1211,49 @@
         <img src="assets/images/clean_04_nickel.png" class="s7-map-layer prediction" id="s7-layer-ni" alt="Nickel Map">
         <img src="assets/images/clean_10_titanium.png" class="s7-map-layer prediction" id="s7-layer-ti" alt="Titanium Map">
       </div>
- 
-      <!-- Left: title + active info -->
+      <!-- Color scale legend -->
+      <div id="s7-colorscale">
+        <span id="s7-scale-label-low">Low</span>
+        <div id="s7-scale-bar"></div>
+        <span id="s7-scale-label-high">High</span>
+        <span id="s7-scale-property"></span>
+      </div>
       <div id="s7-info-panel">
-        <h3 id="s7-panel-title">Explore the<br>Predictions</h3>
-        <p id="s7-panel-sub">Select a property to overlay ML-predicted geochemistry across the continent. Each map reveals a distinct environmental signal.</p>
+        <h3 id="s7-panel-title">Explore the Predictions</h3>
         <div id="s7-active-info">
           <div id="s7-text-content">
             <div id="s7-info-blank" class="s7-info-pane active">
               <h4>Select a property →</h4>
-              <p>Each layer reveals a different environmental driver shaped by millions of years of Antarctic isolation.</p>
+              <p>Each layer reveals one of our best predicted geochemical properties in unseen regions.</p>
             </div>
             <div id="s7-info-d15n" class="s7-info-pane">
               <h4>δ¹⁵N — Nitrogen Isotopes</h4>
               <p class="s7-why-title">Why does it look like this?</p>
-              <p>Coastal hotspots trace penguin rookeries and seal colonies whose waste enriches marine-derived nitrogen. Inland deserts, devoid of animals, show none of this signature.</p>
+              <p>Penguin and seal colonies enrich coastal soils with marine nitrogen via guano. <br>Inland areas that are far from any animals show much lower values.</p>
             </div>
             <div id="s7-info-p" class="s7-info-pane">
               <h4>Phosphorus (P)</h4>
               <p class="s7-why-title">Why does it look like this?</p>
-              <p>Phosphorus concentrations track both bedrock weathering and biological inputs. Coastal zones with high animal activity show elevated values from guano and organic matter decomposition.</p>
+              <p>Coastal zones with high animal activity show elevated phosphorus from guano. <br>However, inland weathering of parent rock is the main source.</p>
             </div>
             <div id="s7-info-na" class="s7-info-pane">
               <h4>Soluble Sodium (Na)</h4>
               <p class="s7-why-title">Why does it look like this?</p>
-              <p>A fading ring around the continent's edges maps the marine aerosol footprint. Coastal winds deposit sea salt directly onto soil; the Transantarctic Mountains block this inland.</p>
+              <p>Sea salt spray carried inland by coastal winds. The Transantarctic Mountains act as a barrier, creating a sharp drop-off into the interior.</p>
             </div>
             <div id="s7-info-ni" class="s7-info-pane">
               <h4>Nickel (Ni)</h4>
               <p class="s7-why-title">Why does it look like this?</p>
-              <p>Nickel distribution closely follows mafic and ultramafic rock formations. Its sharp boundaries are a near-perfect trace of igneous intrusions across ice-free zones.</p>
+              <p>Nickel follows mafic and ultramafic rock formations almost exactly. The sharp prediction color changes indicate real geological boundaries.</p>
             </div>
             <div id="s7-info-ti" class="s7-info-pane">
               <h4>Titanium (Ti)</h4>
               <p class="s7-why-title">Why does it look like this?</p>
-              <p>Stark jagged boundaries trace the Ferrar Dolerite volcanic formations almost perfectly. Chemical weathering is so slow here that bedrock lithology dominates the signal entirely.</p>
+              <p>Titanium predictions follow the Ferrar Dolerite volcanic formations. Weathering in Antarctica is so slow that parent rock chemistry is preserved almost unchanged in the soil.</p>
             </div>
           </div>
         </div>
       </div>
- 
-      <!-- Right: vertical tab strip -->
       <div id="s7-tabs-panel">
         <button class="s7-tab" data-target="d15n" style="--tab-color: #e87878;">
           <div class="s7-tab-inner"><span class="s7-tab-num">01</span><span class="s7-tab-name">Nitrogen Isotopes</span></div>
@@ -1375,15 +1280,52 @@
     <div style="height: 20vh;"></div>
   </section>
  
+  <!-- ══ SCENE 6.5: WHAT THE PREDICTIONS REVEAL ══ -->
+  <section class="scene" id="scene-6b">
+    <div class="scene-graphic" style="background: var(--color-bg); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div style="position:absolute;inset:0;background:url('assets/images/ant_coast.jpg') center/cover no-repeat;opacity:0.08;z-index:0;"></div>
+      <div style="position:relative;z-index:2;text-align:center;padding:0 6vw;max-width:1100px;display:flex;flex-direction:column;align-items:center;gap:3rem;">
+        <p style="font-size:0.62rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--color-text-secondary);margin:0;">What the predictions unlock</p>
+        <p style="font-size:clamp(1.3rem,2.6vw,2.2rem);font-weight:300;color:var(--color-text-primary);line-height:1.35;letter-spacing:-0.015em;margin:0;"><strong>With continent-wide geochemical maps, we can begin to answer questions that were nearly impossible to ask before.</strong></p>
+        <div id="s6b-question-display" style="min-height:3.5rem;display:flex;align-items:center;justify-content:center;">
+          <p id="s6b-question-text" style="font-size:clamp(1rem,1.8vw,1.4rem);font-weight:300;color:var(--color-text-secondary);line-height:1.5;margin:0;opacity:1;transition:opacity 0.5s ease;font-style:italic;"></p>
+        </div>
+      </div>
+    </div>
+    <div style="height: 20vh;"></div>
+  </section>
+  <script>
+  (() => {
+    const questions = [
+      "Where is carbon being stored as ice retreats?",
+      "Which nutrients are cycling fastest in warming soils?",
+      "Where should the next expedition go to fill the biggest knowledge gap?",
+      "Which regions are most chemically anomalous — and why?",
+      "How do Antarctic soil signatures compare to those on Mars?",
+      "What chemical thresholds define the edge of habitability?",
+      "How will nitrogen cycling change as temperatures rise?",
+    ];
+    let idx = 0;
+    const el = document.getElementById('s6b-question-text');
+    if (el) {
+      el.textContent = questions[0];
+      setInterval(() => {
+        el.style.opacity = '0';
+        setTimeout(() => {
+          idx = (idx + 1) % questions.length;
+          el.textContent = questions[idx];
+          el.style.opacity = '1';
+        }, 500);
+      }, 3000);
+    }
+  })();
+  </script>
+ 
   <!-- ══ SCENE 7: WHY IT MATTERS ══ -->
   <section class="scene" id="scene-7">
     <div class="scene-graphic" id="scene-7-graphic">
- 
       <div id="s7w-bg-overlay" aria-hidden="true"></div>
- 
-      <!-- 3-panel card layout -->
       <div id="s7w-cards">
- 
         <div class="s7w-card" id="s7w-card-1">
           <div class="s7w-card-icon">
             <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1397,20 +1339,10 @@
             </svg>
           </div>
           <p class="s7w-card-label">Climate Science</p>
-          <h3 class="s7w-card-title">Tracking a changing continent</h3>
-          <p class="s7w-card-body">As ice retreats and new soils emerge, we have no baseline for what they contain. Geochemical predictions give us that baseline — so we can measure what is being lost or created as the planet warms.</p>
-          <div class="s7w-card-slideshow" id="s7w-slideshow">
-            <img src="assets/images/ice_retreat_1.png" class="s7w-slide active" alt="Ice retreat 1"/>
-            <img src="assets/images/ice_retreat_2.png" class="s7w-slide" alt="Ice retreat 2"/>
-            <img src="assets/images/ice_retreat_3.png" class="s7w-slide" alt="Ice retreat 3"/>
-            <img src="assets/images/ice_retreat_4.png" class="s7w-slide" alt="Ice retreat 4"/>
-            <img src="assets/images/ice_retreat_5.png" class="s7w-slide" alt="Ice retreat 5"/>
-            <img src="assets/images/ice_retreat_6.png" class="s7w-slide" alt="Ice retreat 6"/>
-          </div>
+          <p class="s7w-card-body">Geochemical predictions are a baseline for tracking how soil conditions evolve, allowing us to quantify the change of elements as global temperatures rise.</p>
+          <img src="assets/images/ice_retreat_1.png" class="s7w-card-img" alt="Antarctic ice retreat"/>
         </div>
- 
         <div class="s7w-card-divider"></div>
- 
         <div class="s7w-card" id="s7w-card-2">
           <div class="s7w-card-icon">
             <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1423,14 +1355,11 @@
               <line x1="28" y1="12" x2="36" y2="30" stroke="rgba(74,202,158,0.3)" stroke-width="1" stroke-dasharray="2 2"/>
             </svg>
           </div>
-          <p class="s7w-card-label">Field Science</p>
-          <h3 class="s7w-card-title">Smarter expeditions</h3>
-          <p class="s7w-card-body">Continent-wide prediction maps tell future researchers exactly where the most scientifically valuable sites are — saving time, money, and the enormous logistical costs of Antarctic fieldwork.</p>
+          <p class="s7w-card-label">Smarter Field Work</p>
+          <p class="s7w-card-body">Predictions can help future researchers plan more informed field work expeditions, saving time, resources, and the logistical costs.</p>
           <img src="assets/images/ant_field_work.png" alt="Antarctic field work" class="s7w-card-img"/>
         </div>
- 
         <div class="s7w-card-divider"></div>
- 
         <div class="s7w-card" id="s7w-card-3">
           <div class="s7w-card-icon">
             <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1443,21 +1372,110 @@
               <circle cx="44" cy="26" r="1.5" fill="rgba(232,196,74,0.25)"/>
             </svg>
           </div>
-          <p class="s7w-card-label">Astrobiology</p>
-          <h3 class="s7w-card-title">A window to other worlds</h3>
-          <p class="s7w-card-body">Antarctic ice-free soils are our closest analogue on Earth to the surface of Mars. Understanding what survives here — and why — is a guide to where we might search for life beyond our planet.</p>
+          <p class="s7w-card-label">Life Beyond Earth</p>
+          <p class="s7w-card-body">Antarctic soils are our natural best analogue for extraterrestrial life. Understanding what survives here helps us in our search for life beyond our planet.</p>
           <img src="assets/images/ant_dry_valley.png" alt="Antarctic dry valley" class="s7w-card-img"/>
         </div>
- 
       </div>
     </div>
     <div style="height: 20vh;"></div>
   </section>
  
   <!-- ══ SCENE 8: CREDITS ══ -->
-  <section class="scene scene-placeholder" id="scene-8">
-    <span class="scene-placeholder-label">Scene 8 — Credits and Acknowledgements</span>
+  <section class="scene" id="scene-8" style="background: var(--color-bg); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div id="s8-credits">
+ 
+      <div class="s8-rule"></div>
+      <h1 id="s8-title">The 1%</h1>
+      <p id="s8-subtitle">Predicting Antarctic Soil Geochemistry</p>
+ 
+      <div class="s8-divider"></div>
+ 
+      <div class="s8-block">
+        <p class="s8-section-label">Created by</p>
+        <p class="s8-name">Lily Eliason</p>
+        <p class="s8-affil">Interested in learning more? Visit my Github :)<br></p>
+        <a class="s8-link" href="https://github.com/lilyeliason/ansoil-spatial-prediction" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          github.com/lilyeliason/ansoil-spatial-prediction
+        </a>
+      </div>
+ 
+      <div class="s8-divider"></div>
+ 
+      <div class="s8-block">
+        <p class="s8-section-label">Sampled Geochemical Data</p>
+        <p class="s8-lab-text">
+          Soil geochemical data provided by the <strong>LeMonte Lab of <br>Environmental Geochemistry</strong> at Brigham Young University.
+        </p>
+      </div>
+ 
+      <div class="s8-divider"></div>
+ 
+      <div class="s8-block">
+        <p class="s8-section-label">Open-Access Satellite Data</p>
+        <p class="s8-lab-text">Environmental spatial layers sourced from REMA, WorldClim, and <br>SCAR open-access repositories.</p>
+      </div>
+ 
+      <p class="s8-course-note">This project reflects the <strong>very</strong> preliminary results of this ML predictions project. <br><br>DSPX315 Final Project &nbsp;·&nbsp; Spring 2026 &nbsp;·&nbsp; Brigham Young University</p>
+ 
+    </div>
   </section>
+ 
+  <style>
+    #s8-credits {
+      max-width: 620px; padding: 8vh 6vw;
+      text-align: center; display: flex; flex-direction: column;
+      align-items: center; gap: 2rem;
+    }
+    .s8-rule {
+      width: 36px; height: 1px;
+      background: rgba(74,158,202,0.45); margin: 0 auto;
+    }
+    #s8-title {
+      font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
+      color: var(--color-text-primary); letter-spacing: -0.03em; line-height: 1;
+    }
+    #s8-subtitle {
+      font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 400;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(232,244,248,0.3); margin-top: -1.2rem;
+    }
+    .s8-section-label {
+      font-size: 0.58rem; font-weight: 600; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 0.4rem;
+    }
+    .s8-block { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .s8-name {
+      font-size: clamp(1rem, 1.6vw, 1.25rem); font-weight: 300;
+      color: var(--color-text-primary); letter-spacing: -0.01em;
+    }
+    .s8-affil {
+      font-size: 0.82rem; font-weight: 300;
+      color: rgba(232,244,248,0.38); line-height: 1.7;
+    }
+    .s8-link {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 0.72rem; font-weight: 400;
+      color: rgba(74,158,202,0.8); letter-spacing: 0.05em;
+      text-decoration: none; border: 1px solid rgba(74,158,202,0.22);
+      border-radius: 20px; padding: 6px 16px; margin-top: 0.4rem;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .s8-link:hover { background: rgba(74,158,202,0.1); border-color: rgba(74,158,202,0.5); color: var(--color-text-secondary); }
+    .s8-divider { width: 100%; height: 1px; background: rgba(74,158,202,0.1); }
+    .s8-lab-text {
+      font-size: 0.82rem; font-weight: 300;
+      color: rgba(232,244,248,0.38); line-height: 1.7; max-width: 500px;
+    }
+    .s8-lab-text strong { font-weight: 400; color: rgba(232,244,248,0.38); }
+    .s8-course-note {
+      font-size: 0.82rem; font-weight: 300;
+      color: rgba(232,244,248,0.38); letter-spacing: 0.03em; margin-top: 0.5rem;
+    }
+  </style>
  
   <nav id="progress-dots" aria-label="Scene navigation"></nav>
   <div id="dig-deeper-tooltip" aria-hidden="true">
@@ -1475,14 +1493,12 @@
  
   <script>
   (() => {
-    /* ── Scene 1 video ── */
     const video = document.getElementById('globe-video');
     if (video) {
       video.play().catch(() => { video.style.display = 'none'; });
       video.addEventListener('error', () => { video.style.display = 'none'; }, true);
     }
  
-    /* ── Scene 3 video ── */
     const vid2  = document.getElementById("scene-2-video");
     const imgbg = document.getElementById("scene-2-imgbg");
     if (vid2) {
@@ -1492,35 +1508,32 @@
       }, true);
     }
  
-    /* ── Scroll cue ── */
     const scrollCue = document.getElementById('scroll-cue');
     window.addEventListener('scroll', () => {
       scrollCue.classList.toggle('hidden', window.scrollY > 40);
     }, { passive: true });
  
-    /* ── Flecks ── */
     const flecksContainer = document.getElementById('svg-flecks-container');
     function startFlecks() { flecksContainer.classList.add('is-active'); }
     function stopFlecks()  { flecksContainer.classList.remove('is-active'); }
  
-    /* ── Progress dots (9 scenes) ── */
     const dotsEl = document.getElementById('progress-dots');
-    for (let i = 1; i <= 9; i++) {
+    const sceneIds = ['scene-1','scene-2','scene-3','scene-4','scene-5','scene-6','scene-6b','scene-7','scene-8'];
+    sceneIds.forEach((id, i) => {
       const d = document.createElement('button');
-      d.className = 'progress-dot' + (i === 1 ? ' active' : '');
-      d.dataset.scene = i;
-      d.setAttribute('aria-label', `Go to scene ${i}`);
+      d.className = 'progress-dot' + (i === 0 ? ' active' : '');
+      d.dataset.sceneid = id;
+      d.setAttribute('aria-label', `Go to scene ${i + 1}`);
       d.addEventListener('click', () =>
-        document.getElementById(`scene-${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       );
       dotsEl.appendChild(d);
-    }
-    function setDot(n) {
+    });
+    function setDot(id) {
       document.querySelectorAll('.progress-dot')
-        .forEach(d => d.classList.toggle('active', +d.dataset.scene === n));
+        .forEach(d => d.classList.toggle('active', d.dataset.sceneid === id));
     }
  
-    /* ── Dig deeper panel ── */
     const digBtn     = document.getElementById('dig-deeper-btn');
     const digPanel   = document.getElementById('dig-deeper-panel');
     const digTooltip = document.getElementById('dig-deeper-tooltip');
@@ -1550,13 +1563,11 @@
     });
     function closePanel() { digPanel.classList.remove('open'); document.body.classList.remove('panel-open'); }
  
-    /* ── Scene 1 refs ── */
     const titleBlock = document.getElementById('title-block');
     const scene1el   = document.getElementById('scene-1');
     const s1text1    = document.getElementById('s1-text-1');
     const s1text2    = document.getElementById('s1-text-2');
  
-    /* ── Scene 3 (climate) refs ── */
     const s2title   = document.getElementById('scene-2-title');
     const s2panel   = document.getElementById('scene-2-panel');
     const scene3el  = document.getElementById('scene-3');
@@ -1575,7 +1586,6 @@
     }
     s2playBtn?.addEventListener('click', () => { playVid2(); });
  
-    /* ── Scene 2 (Soils + Geo combined) ── */
     const scene2el      = document.getElementById('scene-2');
     const s2soilTexts   = [0,1,2].map(i => document.getElementById(`s2soil-text-${i}`));
     const s2soilDiagram = document.getElementById('s2soil-diagram');
@@ -1609,19 +1619,15 @@
       if (beat === s2beat) return;
       s2beat = beat;
  
-      // beats 0-2: soil phase
       const inSoilPhase = beat >= 0 && beat <= 2;
       const inGeoPhase  = beat >= 3;
  
-      // soil bg
       if (s2soilBg)      s2soilBg.style.opacity    = inSoilPhase ? '0.35' : '0';
       if (s2soilOverlay) s2soilOverlay.style.opacity = inSoilPhase ? '1'    : '0';
       if (s2soilContent) s2soilContent.style.opacity = inSoilPhase ? '1'    : '0';
-      // geo bg
       if (s2geoBg)       s2geoBg.style.opacity      = inGeoPhase  ? '0.18' : '0';
       if (s2geoOverlay)  s2geoOverlay.style.opacity  = inGeoPhase  ? '1'    : '0';
  
-      // soil text beats
       s2soilTexts.forEach((el, i) => el?.classList.toggle('visible', i === beat));
       if (beat < 0 || beat > 2) {
         s2soilDiagram?.classList.remove('visible');
@@ -1637,7 +1643,7 @@
         showDiagramTiers(5);
       }
  
-      // geo beats
+      /* beat-b removed, so s2geoB will be null — safe to call toggle on null via optional chain */
       s2geoA?.classList.toggle('visible',  beat === 3);
       s2geoA2?.classList.toggle('visible', beat === 4);
       s2geoA3?.classList.toggle('visible', beat === 5);
@@ -1645,7 +1651,6 @@
       if (s2geoBg) s2geoBg.style.opacity = beat === 6 ? '0.06' : (inGeoPhase ? '0.18' : '0');
     }
  
-    /* ── Scene 4 (Sampling) ── */
     const scene4el  = document.getElementById('scene-4');
     const s4beats   = [0,1,2].map(i => document.getElementById(`s4-beat-${i}`));
     let s4beat = -99;
@@ -1656,7 +1661,6 @@
       s4beats.forEach((el, i) => el?.classList.toggle('visible', i === beat));
     }
  
-    /* ── Scene 5 (Satellite + Equation) ── */
     const scene5el    = document.getElementById('scene-5');
     const s5satBeat   = document.getElementById('s5-sat-beat');
     const s5pivotLine = document.getElementById('s5-pivot-line');
@@ -1667,47 +1671,59 @@
     function setS5Beat(beat) {
       if (beat === s5beat) return;
       s5beat = beat;
-      s5satBeat?.classList.toggle('visible',   beat === 0);
-      s5pivotLine?.classList.toggle('visible', beat === 1);
+      s5pivotLine?.classList.toggle('visible', beat === 0);
+      s5satBeat?.classList.toggle('visible',   beat === 1);
       s5eqBeat?.classList.toggle('visible',    beat === 2);
       if (s5dGrid) {
-        if (beat === 0) s5dGrid.classList.add('revealed');
+        if (beat === 1) s5dGrid.classList.add('revealed');
         else s5dGrid.classList.remove('revealed');
       }
     }
  
-    /* ── Scene 6 (Map explorer) ── */
     const s7Tabs      = document.querySelectorAll('.s7-tab');
     const s7Layers    = document.querySelectorAll('.s7-map-layer.prediction');
     const s7Panes     = document.querySelectorAll('.s7-info-pane');
     const s7BlankPane = document.getElementById('s7-info-blank');
+    const s7ColorScale = document.getElementById('s7-colorscale');
+    const s7ScaleBar   = document.getElementById('s7-scale-bar');
+    const s7ScaleProp  = document.getElementById('s7-scale-property');
+ 
+    const s7Scales = {
+      // δ¹⁵N: RdBu_r diverging — blue (low/depleted inland) → white (mid) → red (high/colonies)
+      d15n: { gradient: 'linear-gradient(to right, #2166ac, #4393c3, #92c5de, #d1e5f0, #f7f7f7, #fddbc7, #f4a582, #d6604d, #b2182b)', unit: 'δ¹⁵N (‰)' },
+      // Phosphorus: viridis
+      p:    { gradient: 'linear-gradient(to right, #440154, #482878, #3e4989, #31688e, #26828e, #1f9e89, #35b779, #6ece58, #b5de2b, #fde725)', unit: 'P (mg/kg)' },
+      // Sodium: viridis
+      na:   { gradient: 'linear-gradient(to right, #440154, #482878, #3e4989, #31688e, #26828e, #1f9e89, #35b779, #6ece58, #b5de2b, #fde725)', unit: 'Na (mg/kg)' },
+      // Nickel: viridis
+      ni:   { gradient: 'linear-gradient(to right, #440154, #482878, #3e4989, #31688e, #26828e, #1f9e89, #35b779, #6ece58, #b5de2b, #fde725)', unit: 'Ni (mg/kg)' },
+      // Titanium: viridis
+      ti:   { gradient: 'linear-gradient(to right, #440154, #482878, #3e4989, #31688e, #26828e, #1f9e89, #35b779, #6ece58, #b5de2b, #fde725)', unit: 'Ti (mg/kg)' },
+    };
  
     s7Tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const target = tab.dataset.target;
         const newLayer = document.getElementById(`s7-layer-${target}`);
         const newPane  = document.getElementById(`s7-info-${target}`);
- 
-        // Activate new layer FIRST (before deactivating others) to avoid blank flash
         if (newLayer) newLayer.classList.add('active');
- 
-        // Small delay to let new layer start fading in before old one fades out
         requestAnimationFrame(() => {
           s7Layers.forEach(l => { if (l !== newLayer) l.classList.remove('active'); });
         });
- 
-        // Swap tabs
         s7Tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
- 
-        // Swap info panes
         s7Panes.forEach(p => p.classList.remove('active'));
         if (newPane) newPane.classList.add('active');
         else s7BlankPane.classList.add('active');
+        const scale = s7Scales[target];
+        if (scale && s7ColorScale) {
+          s7ScaleBar.style.background = scale.gradient;
+          s7ScaleProp.textContent = scale.unit;
+          s7ColorScale.classList.add('visible');
+        }
       });
     });
  
-    /* ── Scene 7 card 1 slideshow ── */
     const s7wSlides = document.querySelectorAll('.s7w-slide');
     let s7wSlideIdx = 0;
     if (s7wSlides.length) {
@@ -1718,22 +1734,19 @@
       }, 2200);
     }
  
-    /* ── Main scroll handler ── */
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
  
-      /* Scene 1 */
       if (scene1el) {
         const depth = scrollY - scene1el.offsetTop;
         if (depth > 60) titleBlock?.classList.add('faded');
         else titleBlock?.classList.remove('faded');
         if (depth > 220) s1text1?.classList.add('visible');
         else s1text1?.classList.remove('visible');
-        if (depth > 420) { s1text2?.classList.add('visible'); startFlecks(); }
+        if (depth > 550) { s1text2?.classList.add('visible'); startFlecks(); }
         else { s1text2?.classList.remove('visible'); stopFlecks(); }
       }
  
-      /* Scene 2 (Soils + Geo, 7 beats: 0-6) */
       if (scene2el) {
         const rect = scene2el.getBoundingClientRect();
         const total = scene2el.offsetHeight - window.innerHeight;
@@ -1742,17 +1755,16 @@
           setS2Beat(-1);
         } else {
           const p = total > 0 ? Math.min(1, Math.max(0, scrolled / total)) : 0;
-          if      (p < 0.12) setS2Beat(0);
-          else if (p < 0.28) setS2Beat(1);
-          else if (p < 0.42) setS2Beat(2);
-          else if (p < 0.55) setS2Beat(3);
-          else if (p < 0.65) setS2Beat(4);
-          else if (p < 0.78) setS2Beat(5);
-          else               setS2Beat(6);
+          /* 5 beats now (0-4): soil×3 + geo hooks×3, no beat-b */
+          if      (p < 0.15) setS2Beat(0);
+          else if (p < 0.35) setS2Beat(1);
+          else if (p < 0.55) setS2Beat(2);
+          else if (p < 0.70) setS2Beat(3);
+          else if (p < 0.85) setS2Beat(4);
+          else               setS2Beat(5);
         }
       }
  
-      /* Scene 3 (Climate video) */
       if (scene3el && vid2) {
         const rect  = scene3el.getBoundingClientRect();
         const total = scene3el.offsetHeight - window.innerHeight;
@@ -1782,7 +1794,6 @@
         }
       }
  
-      /* Scene 4 (Sampling, 3 beats: 0-2) */
       if (scene4el) {
         const rect = scene4el.getBoundingClientRect();
         const total = scene4el.offsetHeight - window.innerHeight;
@@ -1797,7 +1808,6 @@
         }
       }
  
-      /* Scene 5 (Satellite + Equation, 3 beats: 0-2) */
       if (scene5el) {
         const rect = scene5el.getBoundingClientRect();
         const total = scene5el.offsetHeight - window.innerHeight;
@@ -1814,38 +1824,322 @@
  
     }, { passive: true });
  
-    /* ── Dot sync + dig deeper visibility ── */
-    const allScenes = Array.from({ length: 9 }, (_, i) =>
-      document.getElementById(`scene-${i + 1}`)
-    ).filter(Boolean);
+    const allScenes = [
+      document.getElementById('scene-1'),
+      document.getElementById('scene-2'),
+      document.getElementById('scene-3'),
+      document.getElementById('scene-4'),
+      document.getElementById('scene-5'),
+      document.getElementById('scene-6'),
+      document.getElementById('scene-6b'),
+      document.getElementById('scene-7'),
+      document.getElementById('scene-8'),
+    ].filter(Boolean);
+ 
+    const noDigScenes = new Set(['scene-1', 'scene-6b', 'scene-8']);
  
     function updateDigVisibility() {
       const mid = window.scrollY + window.innerHeight * 0.5;
-      let activeScene = 1;
+      let activeId = 'scene-1';
       for (const s of allScenes) {
-        if (s.offsetTop <= mid) activeScene = parseInt(s.id.split('-')[1]);
+        if (s.offsetTop <= mid) activeId = s.id;
       }
-      const show = activeScene >= 2;
+      const show = !noDigScenes.has(activeId);
       digBtn.classList.toggle('visible', show);
-      const isClimate = activeScene === 3;
+      const isClimate = activeId === 'scene-3';
       digBtn.classList.toggle('raised', isClimate);
       digBtn.style.bottom = isClimate ? '80px' : '30px';
       if (digTooltip) digTooltip.style.bottom = isClimate ? '128px' : '78px';
-      if (show && !tooltipShown && activeScene === 2) showTooltip();
+      if (show && !tooltipShown && activeId === 'scene-2') showTooltip();
     }
  
     function updateDotFromScroll() {
       const mid = window.scrollY + window.innerHeight * 0.5;
-      let active = 1;
+      let activeId = 'scene-1';
       for (const s of allScenes) {
-        if (s.offsetTop <= mid) active = parseInt(s.id.split('-')[1]);
+        if (s.offsetTop <= mid) activeId = s.id;
       }
-      setDot(active);
+      setDot(activeId);
       updateDigVisibility();
     }
  
     window.addEventListener('scroll', updateDotFromScroll, { passive: true });
     updateDotFromScroll();
+ 
+    /* ── Dig deeper: scene-aware content ── */
+    const digContent = document.getElementById('dig-deeper-content');
+ 
+    const ddContent = {
+      'scene-2-soil': `
+        <div class="dd-section">
+          <span class="dd-label">The ecosystem Antarctic soils support</span>
+          <div class="dd-body">
+            <p>Despite being among the most extreme soils on Earth, Antarctic soils support a complete food web. At the foundation is soil chemistry itself with unique pH, nutrient availability, ion concentrations, and stable isotopes that determine which set the conditions for which organisms can survive.</p>
+            <p>The microbial layer (bacteria, fungi, cyanobacteria) accounts for almost all primary productivity in ice-free Antarctic areas. Above them, nematodes, tardigrades, and mites are the most complex animals in the continent's interior. Mosses and lichens grow near liquid water. All large Antarctic macroorganisms such as Seabirds, Seals, and other Marine animals require close proximity to the ocean for survival.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">What soil chemistry measures</span>
+          <div class="dd-body">
+            <p><strong>pH and electrical conductivity</strong> — Acid-base balance and total dissolved salt content. These determine which organisms survive and control the solubility of all other elements.</p>
+            <p><strong>Stable isotopes (δ¹⁵N, δ¹³C)</strong> — Isotope ratios tracing nitrogen and carbon sources. δ¹⁵N is enriched near penguin colonies; δ¹³C distinguishes marine vs. terrestrial carbon inputs.</p>
+            <p><strong>Total carbon and nitrogen (wt%)</strong> — Extremely low in Antarctic soils compared to temperate systems.</p>
+            <p><strong>Water-soluble ions</strong> — Fluoride, chloride, nitrate, phosphate, sulfate, calcium, potassium, magnesium, sodium. The immediately plant-available fraction and a record of atmospheric deposition.</p>
+            <p><strong>Digested metals</strong> — Total elemental concentrations (Al, Fe, Ti, Ni, Mn, Na, K, P, and others) from acid digestion. These reflect parent rock, weathering history, and biological inputs.</p>
+            <p><strong>Cation Exchange Capacity (CEC)</strong> — The soil's capacity to hold and exchange positively charged ions; a measure of fertility and clay content.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Key references</span>
+          <div class="dd-body">
+            <p class="dd-ref">Bokhorst, S., Convey, P. & Aerts, R. (2019). Nitrogen inputs by marine vertebrates drive abundance and richness in Antarctic terrestrial ecosystems. Current Biology, 29(11), 1721–1727.</p>
+            <p class="dd-ref">Convey, P. et al. (2009). Antarctic ecosystem vulnerability to climate change and human impact. Antarctic Science, 21(6), 537–556.</p>
+          </div>
+        </div>`,
+ 
+      'scene-2-geo': `
+        <div class="dd-section">
+          <span class="dd-label">Antarctica's unmapped soils</span>
+          <div class="dd-body">
+            <p>A century of Antarctic expeditions has produced detailed knowledge of several well-funded research stations and nearby field sites. However, systematic continent-wide soil geochemical mapping has never been attempted. The vast majority of Antarctica's 44,000 km² of ice-free land has never had a soil sample collected from it.</p>
+            <p>These soils are barometers of environmental change. Soil chemistry integrates decades to millennia of climate, biology, and geology into a single measurable record. Without continent-wide baselines, we cannot detect what is changing, distinguish natural variability from climate-driven shifts, or understand how different regions will respond to warming.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Key references</span>
+          <div class="dd-body">
+            <p class="dd-ref">Bower, D.M. et al. (2021). Geochemical zones and environmental gradients for soils from the central Transantarctic Mountains. Biogeosciences, 18, 1629–1644.</p>
+          </div>
+        </div>`,
+ 
+      'scene-3': `
+        <div class="dd-section">
+          <span class="dd-label">How Antarctica is changing</span>
+          <div class="dd-body">
+            <p>The Antarctic Peninsula has warmed by approximately 3°C over the past 50 years–nearly five times the global average. Ice shelves are collapsing, glaciers are retreating, and soils that have been frozen for thousands of years are being newly exposed.</p>
+            <p>The video uses NASA GRACE/GRACE-FO satellite gravity data, which detects minute changes in Earth's gravitational field caused by redistributions of ice mass, one of the most direct measures of total ice loss across Antarctica.</p>
+            <p>As new soils are exposed, they enter a geochemical blank slate. Tracking how their chemistry evolves requires knowing what surrounding soils look like now. That is what the spatial predictions in this project provide.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Media credits</span>
+          <div class="dd-body">
+            <p class="dd-ref">Ice mass change video: NASA Scientific Visualization Studio. Antarctic Ice Mass Variation from GRACE/GRACE-FO. NASA/Goddard Space Flight Center. svs.gsfc.nasa.gov</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Key references</span>
+          <div class="dd-body">
+            <p class="dd-ref">Velicogna, I. et al. (2020). Continuity of ice sheet mass loss in Greenland and Antarctica from the GRACE and GRACE Follow-On missions. Geophysical Research Letters, 47(8).</p>
+            <p class="dd-ref">Convey, P. & Peck, L.S. (2019). Antarctic environmental change and biological responses. Science Advances, 5(11), eaaz0888.</p>
+          </div>
+        </div>`,
+ 
+      'scene-4-acbr': `
+        <div class="dd-section">
+          <span class="dd-label">Antarctic Conservation Biogeographic Regions</span>
+          <div class="dd-body">
+            <p>The 16 ACBRs were delineated by Terauds et al. (2012) using over 38,000 biodiversity records combined with environmental domain analysis. They are the standard framework for Antarctic conservation policy under the Antarctic Treaty System.</p>
+            <p>Each ACBR has a distinct climate, geology, and biological community — and therefore distinct soil chemistry. A soil from the NW Antarctic Peninsula (warm, maritime, biologically active) looks completely different from one in the Transantarctic Mountains (cold, dry, geologically dominated).</p>
+            <p>Comprehensive geochemical coverage would require <strong>thousands of samples spread across all 16 regions</strong>, at multiple elevations and distances from coast. No such dataset currently exists for Antarctica.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Media credits</span>
+          <div class="dd-body">
+            <p class="dd-ref">ACBR map: Terauds, A. & Lee, J.R. (2016). Antarctic Conservation Biogeographic Regions v2. Australian Antarctic Data Centre. doi:10.4225/15/54AF512520027</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Key references</span>
+          <div class="dd-body">
+            <p class="dd-ref">Terauds, A. et al. (2012). Conservation biogeography of the Antarctic. Diversity and Distributions, 18(5), 726–741.</p>
+            <p class="dd-ref">Terauds, A. & Lee, J.R. (2016). Antarctic biogeography revisited: updating the ACBRs. Diversity and Distributions, 22(8), 836–840.</p>
+          </div>
+        </div>`,
+ 
+      'scene-4-barriers': `
+        <div class="dd-section">
+          <span class="dd-label">Why sampling everywhere isn't realistic</span>
+          <div class="dd-body">
+            <p><strong>Cost.</strong> A single Antarctic field season costs tens of thousands of dollars per scientist. Accessing remote ice-free areas requires chartered aircraft or helicopter support and on top of that, each new site outside an existing station requires its own logistical chain: fuel caches, communications, emergency plans, and often days of travel each way. Sampling 1,000 locations across Antarctica would cost tens of millions of dollars.</p>
+            <p><strong>Time.</strong> The Antarctic field season is roughly 3–4 months long (November through February), constrained by weather windows and daylight. Each site requires one to several days of preparation, sample collection, documentation, and packing for shipment. A single researcher can realistically visit only a handful of new locations per season.</p>
+            <p><strong>Logistics.</strong> Antarctica has no road network, no fuel infrastructure outside major stations, and weather that can ground flights for days at a time. More remote ice-free areas may be visited only a few rare times per decade. Even getting samples home is non-trivial: they must be preserved frozen and shipped long distances, often waiting months before analysis.</p>
+          </div>
+        </div>`,
+ 
+      'scene-4-samples': `
+        <div class="dd-section">
+          <span class="dd-label">What the lab actually measured</span>
+          <div class="dd-body">
+            <p>Soil samples were collected from the surface (0-5 cm) from across four ice-free Antarctic Conservation Biogeographic Regions. They were collected within the last 10 years and kept frozen at -20°C in the dark. We analyzed 103 samples from the Transantarctic Mountains (TAM), 74 samples from South Victoria Land (SVL), 8 samples from North Victoria Land (NVL), and 15 samples from the North-west Antarctic Peninsula (NWAP). (Cut down to 171 samples after data cleaning) Samples were then processed at the LeMonte Lab of Geochemistry at Brigham Young University across 4 main categories..</p>
+            <p><strong>pH and conductivity</strong> was measured in three solutions (MilliQ water, KCl, CaCl₂) to characterize active acidity and buffering capacity. Electrical conductivity in µS/cm reflects total dissolved salt load.</p>
+            <p><strong>Stable isotope analysis (IRMS)</strong> for δ¹⁵N and δ¹³C by isotope ratio mass spectrometry, plus total weight percent nitrogen and carbon by dry combustion.</p>
+            <p><strong>Water-soluble ion extraction</strong> were done in sequential 1-hour and 24-hour water extractions capturing fast and slow-dissolving ions: fluoride, chloride, nitrate, phosphate, sulfate, calcium, magnesium, potassium, sodium, and strontium by ion chromatography and ICP-MS.</p>
+            <p><strong>Acid digestions</strong> were done with nitric/hydrochloric acid, followed by ICP-MS for 24+ trace and major elements including Al, As, Fe, Ni, Ti, Pb, Cr, Cu, Mn, Mo, Na, P, V, Zn, and others.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Download the lab data</span>
+          <div class="dd-body">
+            <p>The cleaned dataset used in this project with all 171 samples with coordinates, environmental predictors, and measured geochemical properties is available to view as a CSV.</p>
+            <p><a href="lab_data.csv" download style="color:var(--color-text-secondary);font-weight:500;text-decoration:none;border:1px solid rgba(74,158,202,0.3);padding:6px 14px;border-radius:20px;font-size:0.78rem;letter-spacing:0.05em;">↓ Download lab_data.csv</a></p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Image credits</span>
+          <div class="dd-body">
+            <p class="dd-ref">Sample location map: generated from lab data, Eliason (2026).</p>
+          </div>
+        </div>`,
+ 
+      'scene-5-sat': `
+        <div class="dd-section">
+          <span class="dd-label">The 9 satellite environmental layers</span>
+          <div class="dd-body">
+            <p><strong>Elevation</strong> — from REMA (Reference Elevation Model of Antarctica), the first continental DEM at sub-10m resolution. Controls temperature, weathering rate, and soil age.</p>
+            <p><strong>Mean annual temperature</strong> — from WorldClim 2.1, interpolated from weather station records (1970–2000). The primary driver of chemical weathering rates and biological activity.</p>
+            <p><strong>Mean annual precipitation</strong> — from WorldClim 2.1. Most Antarctic ice-free areas receive under 200 mm/year. Affects salt accumulation and ion mobility.</p>
+            <p><strong>Slope</strong> — from REMA. Steeper slopes experience more disturbance, faster drainage, and less soil development.</p>
+            <p><strong>Aspect (sin + cos)</strong> — from REMA, encoded as sine and cosine so that 359° and 1° are treated as adjacent. Controls sun exposure and freeze-thaw cycles.</p>
+            <p><strong>Distance to coast</strong> — calculated from the SCAR Antarctic Digital Database coastline. One of the strongest predictors of marine aerosol deposition (Na, Cl) and biological influence.</p>
+            <p><strong>Projected coordinates (X, Y)</strong> — in Antarctic Polar Stereographic (EPSG:3031). Capture large-scale gradients that other variables miss.</p>
+            <p><strong>Lithology (9 rock classes)</strong> — from the SCAR geological map, one-hot encoded. Parent rock determines soil elemental composition for metals like Ti, Ni, and Fe.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Data sources</span>
+          <div class="dd-body">
+            <p class="dd-ref">Elevation, slope, aspect: Howat, I.M. et al. (2019). The Reference Elevation Model of Antarctica (REMA). The Cryosphere, 13(2), 665–674. doi:10.5194/tc-13-665-2019</p>
+            <p class="dd-ref">Temperature, precipitation: Fick, S.E. & Hijmans, R.J. (2017). WorldClim 2: new 1-km spatial resolution climate surfaces for global land areas. Int. J. Climatol., 37, 4302–4315.</p>
+            <p class="dd-ref">Lithology: SCAR Antarctic Geological Map. scar.org</p>
+            <p class="dd-ref">Coastline: SCAR Antarctic Digital Database v7. scar.org/science-policy/antarctic-digital-database</p>
+          </div>
+        </div>`,
+ 
+      'scene-5-eq': `
+        <div class="dd-section">
+          <span class="dd-label">How the predictions work</span>
+          <div class="dd-body">
+            <p>The models learn the statistical relationships between the 9 satellite layers (known for every grid cell) and the 67 geochemical properties (known only at the 171 sample locations). Once trained, they estimate geochemistry for all 15,769 grid cells across Antarctica's ice-free areas.</p>
+            <p><strong>K-Nearest Neighbors (KNN)</strong> finds the most environmentally similar sample locations and averages their chemistry. Uses a custom lithology dissimilarity matrix encoding how geochemically similar different rock types are.</p>
+            <p><strong>Random Forest (RF)</strong> grows hundreds of independent decision trees on random subsets of samples and features, then averages predictions. Robust to small datasets and the top performer in the closest comparable Antarctic study.</p>
+            <p><strong>XGBoost</strong> builds trees sequentially, each correcting the errors of the previous one. An earlier version used early stopping on the test fold — leakage that inflated R² by +0.21 on average. The current version is fully leak-free.</p>
+            <p>All models use <strong>Leave-One-Location-Out cross-validation</strong>: each of the 28 sampling locations is held out entirely, the model trains on the remaining 27, and predictions are made for the held-out location. This gives honest accuracy estimates for genuinely new sites.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Key references</span>
+          <div class="dd-body">
+            <p class="dd-ref">Breiman, L. (2001). Random Forests. Machine Learning, 45, 5–32.</p>
+            <p class="dd-ref">Chen, T. & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. ACM SIGKDD, 785–794.</p>
+            <p class="dd-ref">Meyer, H. et al. (2018). Improving performance of spatio-temporal machine learning models using forward feature selection and target-oriented validation. Environmental Modelling &amp; Software, 101, 1–9.</p>
+            <p class="dd-ref">Siqueira, R.G. et al. (2024). Modelling and prediction of major soil chemical properties with Random Forest. Catena, 235, 107677.</p>
+          </div>
+        </div>`,
+ 
+      'scene-6': `
+        <div class="dd-section">
+          <span class="dd-label">Reading the prediction maps</span>
+          <div class="dd-body">
+            <p><strong>δ¹⁵N:</strong> The strongest predicted property. Coastal hotspots trace penguin rookeries and seal colonies where marine nitrogen from guano persists in soil chemistry for thousands of years. Inland areas are strongly depleted. Blue = depleted, red = enriched.</p>
+            <p><strong>Phosphorus:</strong> Driven by parent rock weathering and biological inputs from guano. Coastal zones show elevated P; inland areas are much lower.</p>
+            <p><strong>Sodium:</strong> A marine aerosol tracer. The gradient from coast to interior maps sea salt deposition; the Transantarctic Mountains create a sharp inland drop-off.</p>
+            <p><strong>Nickel:</strong> Follows mafic and ultramafic lithology closely. Sharp boundaries reflect genuine geological contacts between enriched and depleted rock types.</p>
+            <p><strong>Titanium:</strong> Traces the Ferrar Dolerite volcanic formations. Chemical weathering in Antarctica is so slow that parent rock chemistry is essentially preserved directly in the soil.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Key references</span>
+          <div class="dd-body">
+            <p class="dd-ref">Bower, D.M. et al. (2021). Geochemical zones and environmental gradients for soils from the central Transantarctic Mountains. Biogeosciences, 18, 1629–1644.</p>
+            <p class="dd-ref">Siqueira, R.G. et al. (2024). Modelling and prediction of major soil chemical properties with Random Forest. Catena, 235, 107677.</p>
+          </div>
+        </div>`,
+ 
+      'scene-7': `
+        <div class="dd-section">
+          <span class="dd-label">Climate science</span>
+          <div class="dd-body">
+            <p>The geochemical predictions establish a spatially continuous baseline. As the peninsula warms and ice retreats, newly exposed soils will accumulate organic matter, shift in pH, and gain marine nitrogen. Without a pre-disturbance reference, it is impossible to separate natural variability from climate-driven change.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Smarter field work</span>
+          <div class="dd-body">
+            <p>The prediction grid identifies which of the 15,769 grid cells are most anomalous with the highest uncertainty and most divergent from neighbors, and therefore the highest priority for future sampling. Model-informed adaptive sampling has proven value in mineral exploration and precision agriculture but has rarely been applied to polar soil science.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Life beyond Earth</span>
+          <div class="dd-body">
+            <p>Antarctic Dry Valley soils are the best terrestrial analogue for Mars with similar cold, hyper-arid, UV-irradiated, minimal organic carbon. The chemical thresholds for habitability here (nitrogen, carbon, pH, and moisture) are directly relevant to biosignature searches on Mars and icy moons like Europa and Enceladus.</p>
+          </div>
+        </div>
+        <div class="dd-rule"></div>
+        <div class="dd-section">
+          <span class="dd-label">Key references</span>
+          <div class="dd-body">
+            <p class="dd-ref">Convey, P. & Peck, L.S. (2019). Antarctic environmental change and biological responses. Science Advances, 5(11), eaaz0888.</p>
+            <p class="dd-ref">McKay, C.P. (2014). Requirements and limits for life in the context of exoplanets. PNAS, 111(35), 12628–12633.</p>
+          </div>
+        </div>`,
+    };
+ 
+    const defaultContent = ddContent['scene-2-soil'];
+ 
+    function updateDigContent(sceneId) {
+      const content = ddContent[sceneId] || defaultContent;
+      if (digContent) digContent.innerHTML = content;
+    }
+ 
+ 
+    function updateDigContent(sceneId) {
+      const content = ddContent[sceneId] || defaultContent;
+      if (digContent) digContent.innerHTML = content;
+    }
+ 
+    /* Hook dig content into scroll */
+    window.addEventListener('scroll', () => {
+      const mid = window.scrollY + window.innerHeight * 0.5;
+      let activeId = 'scene-1';
+      for (const s of allScenes) {
+        if (s.offsetTop <= mid) activeId = s.id;
+      }
+      // Sub-scene content routing
+      let contentKey = activeId;
+      let hideDig = noDigScenes.has(activeId);
+      if (activeId === 'scene-2') {
+        contentKey = (s2beat >= 3) ? 'scene-2-geo' : 'scene-2-soil';
+      } else if (activeId === 'scene-4') {
+        if (s4beat === 0) contentKey = 'scene-4-acbr';
+        else if (s4beat === 1) contentKey = 'scene-4-barriers';
+        else contentKey = 'scene-4-samples';
+      } else if (activeId === 'scene-5') {
+        if (s5beat === 0) hideDig = true; // pivot line — no dig deeper
+        else if (s5beat === 2) contentKey = 'scene-5-eq';
+        else contentKey = 'scene-5-sat';
+      }
+      digBtn.classList.toggle('visible', !hideDig && activeId !== 'scene-1');
+      updateDigContent(contentKey);
+    }, { passive: true });
+ 
+    /* Set initial content */
+    updateDigContent('scene-1');
  
     const scroller = scrollama();
     scroller.setup({ step: '.step', offset: 0.55 })

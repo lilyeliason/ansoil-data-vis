@@ -1,0 +1,177 @@
+sample_number,sample_id,abbr_id,sample_location,location_group,acbr,lat,lon
+1,AV1-1,AV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.17621667,-174.0884833
+2,AV1-8,AV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.17595,-174.1165333
+3,AV2-1,AV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.1706,-174.1338
+4,AV3-1,AV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.17068333,-174.1483
+5,AV3-7,AV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.16708333,-174.1508333
+6,BP1-1,BP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.21261667,-177.3386167
+7,BP1-8,BP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.20063333,-177.3757667
+8,BP2-1,BP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.21213333,-177.3576
+9,BP3-1,BP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.21436667,-177.4047667
+10,BP3-8,BP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.2049,-177.4135667
+11,BPS-1,BPS,Bull Pass,Upper Wright Valley,South Victoria Land,-77.47965,161.74065
+12,BPS-18,BPS,Bull Pass,Upper Wright Valley,South Victoria Land,-77.475483,161.780483
+13,BPS-22,BPS,Bull Pass,Upper Wright Valley,South Victoria Land,-77.475483,161.787483
+14,BPS-25,BPS,Bull Pass,Upper Wright Valley,South Victoria Land,-77.474317,161.79715
+15,BPS-5,BPS,Bull Pass,Upper Wright Valley,South Victoria Land,-77.47415,161.797817
+16,BS-607,BS,Battleship Promontory,Alatna Valley,South Victoria Land,-76.922417,161.081533
+17,BS-610,BS,Battleship Promontory,Alatna Valley,South Victoria Land,-76.922133,161.077833
+18,BS-618,BS,Battleship Promontory,Alatna Valley,South Victoria Land,-76.921567,161.080067
+19,CB-CMBjA1,CB,The Cloudmaker,Beardmore Glacier,Transantarctic Mountains,-84.272414,169.320419
+20,CB-iH5,CB,The Cloudmaker,Beardmore Glacier,Transantarctic Mountains,-84.26257,169.274083
+21,CK-20B,CK,CTAM: Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.811847,171.946772
+22,CK1-100B,CK,CTAM: Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.82078,171.964511
+23,CK2-100A,CK,CTAM: Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.820775,171.964582
+24,CK2-100B,CK,CTAM: Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.81118,171.952737
+25,CM-2 1,CM,CTAM: Meyers Desert,Beardmore Glacier,Transantarctic Mountains,-85.162,167.083333
+26,CM-4,CM,CTAM: Meyers Desert,Beardmore Glacier,Transantarctic Mountains,-85.171731,167.079235
+27,CM-PA 3-10,CM,CTAM: Meyers Desert,Beardmore Glacier,Transantarctic Mountains,-85.17185,167.079833
+28,CM-PA 30,CM,CTAM: Meyers Desert,Beardmore Glacier,Transantarctic Mountains,-85.171731,167.079235
+29,CM2 (OM),CM,CTAM: Meyers Desert,Beardmore Glacier,Transantarctic Mountains,-85.161882,167.083086
+30,CR-0819,CR,Cape Royds (2007-08),Cape Royds,South Victoria Land,-77.551,166.163
+31,CR-0821,CR,Cape Royds (2007-08),Cape Royds,South Victoria Land,-77.551,166.163
+32,CR-0826,CR,Cape Royds (2007-08),Cape Royds,South Victoria Land,-77.551,166.163
+33,CR-0828,CR,Cape Royds (2007-08),Cape Royds,South Victoria Land,-77.551,166.163
+34,CR-0833,CR,Cape Royds (2007-08),Cape Royds,South Victoria Land,-77.551,166.163
+35,CS-CR2,CS,Cape Royds (2012-13),Cape Royds,South Victoria Land,-77.55312,166.16075
+36,CS-CR5,CS,Cape Royds (2012-13),Cape Royds,South Victoria Land,-77.55379,166.16237
+37,CS-CR7,CS,Cape Royds (2012-13),Cape Royds,South Victoria Land,-77.55383,166.16182
+38,CS-CR9,CS,Cape Royds (2012-13),Cape Royds,South Victoria Land,-77.5538,166.16188
+39,DA-1,DA,Darwin,Darwin Glacier,South Victoria Land,-79.87,159.36
+40,DA-3,DA,Darwin,Darwin Glacier,South Victoria Land,-79.87,159.36
+41,DA-4,DA,Darwin,Darwin Glacier,South Victoria Land,-79.87,159.36
+42,DA-5,DA,Darwin,Darwin Glacier,South Victoria Land,-79.87,159.36
+43,DA-6,DA,Darwin,Darwin Glacier,South Victoria Land,-79.87,159.36
+44,DS1(1-2),DS,Dais,Upper Wright Valley,South Victoria Land,-77.551217,161.22075
+45,DS2(1-2),DS,Dais,Upper Wright Valley,South Victoria Land,-77.55055,161.25785
+46,GE-A1-3,GE,Garwood Elevationanl Transect,Garwood Valley,South Victoria Land,-78.02102,163.89929
+47,GE-A2-2,GE,Garwood Elevationanl Transect,Garwood Valley,South Victoria Land,-78.02102,163.89957
+48,GE-B1-3,GE,Garwood Elevationanl Transect,Garwood Valley,South Victoria Land,-78.01838,163.88684
+49,GE-C2-3,GE,Garwood Elevationanl Transect,Garwood Valley,South Victoria Land,-78.0178,163.87904
+50,GE-C3-2,GE,Garwood Elevationanl Transect,Garwood Valley,South Victoria Land,-78.0178,163.87984
+51,HC-BA1,HC,Hawkins Cirque,Virginia Valley,South Victoria Land,-77.51125,160.58441
+52,HC-BA2,HC,Hawkins Cirque,Virginia Valley,South Victoria Land,-77.51149,160.58763
+53,HC-Z5-1,HC,Hawkins Cirque,Virginia Valley,South Victoria Land,-77.509267,160.589717
+54,HC-ZS2,HC,Hawkins Cirque,Virginia Valley,South Victoria Land,-77.509533,160.596333
+55,HD-10,HD,Hogg: Durham Point,Scott Glacier,Transantarctic Mountains,-85.53565,-151.18523
+56,HD-14,HD,Hogg: Durham Point,Scott Glacier,Transantarctic Mountains,-85.53555,-151.18968
+57,HD-6,HD,Hogg: Durham Point,Scott Glacier,Transantarctic Mountains,-85.54578,-151.14393
+58,HG-3,HG,Hogg: Garden Spur,Garden Spur,Transantarctic Mountains,-84.5361,-174.9459
+59,HG-54,HG,Hogg: Garden Spur,Garden Spur,Transantarctic Mountains,-84.5362,-174.9438
+60,HG-6,HG,Hogg: Garden Spur,Garden Spur,Transantarctic Mountains,-84.5357,-174.9415
+61,HG-8,HG,Hogg: Garden Spur,Garden Spur,Transantarctic Mountains,-84.5356,-174.952
+62,HG-9,HG,Hogg: Garden Spur,Garden Spur,Transantarctic Mountains,-84.5379,-174.9299
+63,HK-1,HK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.760833,172.746167
+64,HK-2,HK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.760833,172.7461
+65,HK-3,HK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.760817,172.74665
+66,HK-4,HK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.760717,172.749983
+67,HK-5,HK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.760733,172.750683
+68,HM-2,HM,Hogg: Masan,Mason Glacier,Transantarctic Mountains,-84.559,175.0087
+69,HM-3,HM,Hogg: Masan,Mason Glacier,Transantarctic Mountains,-84.559,175.0086
+70,HM-5,HM,Hogg: Masan,Mason Glacier,Transantarctic Mountains,-84.55905,175.0089
+71,HM-6,HM,Hogg: Masan,Mason Glacier,Transantarctic Mountains,-84.55917,175.0089
+72,HR-1,HR,Gateway Spur,Beardmore Glacier,Transantarctic Mountains,-83.774467,170.789883
+73,HR-2,HR,Gateway Spur,Beardmore Glacier,Transantarctic Mountains,-83.774883,170.78935
+74,HR-3,HR,Gateway Spur,Beardmore Glacier,Transantarctic Mountains,-83.774067,170.779983
+75,HR-4,HR,Gateway Spur,Beardmore Glacier,Transantarctic Mountains,-83.77465,170.7777
+76,HR-5,HR,Gateway Spur,Beardmore Glacier,Transantarctic Mountains,-83.774367,170.777417
+77,HS-1,HS,Harcourt Spur,Beardmore Glacier,Transantarctic Mountains,-83.8008,172.217233
+78,HS-2,HS,Harcourt Spur,Beardmore Glacier,Transantarctic Mountains,-83.800917,172.219133
+79,HS-3,HS,Harcourt Spur,Beardmore Glacier,Transantarctic Mountains,-83.800867,172.221833
+80,HS-4,HS,Harcourt Spur,Beardmore Glacier,Transantarctic Mountains,-83.8003,172.2103
+81,HS-7,HS,Harcourt Spur,Beardmore Glacier,Transantarctic Mountains,-83.805733,172.26245
+82,HV1-8,HV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.03005,-177.1751333
+83,HV2-5,HV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.0467,-177.4161667
+84,HV3-1,HV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.03316667,-177.3292167
+85,HV3-9,HV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.02945,-177.1922833
+86,HVY-4A,HVY,Hidden Valley,Hidden Valley,South Victoria Land,-78.14,163.901
+87,HVY-5A,HVY,Hidden Valley,Hidden Valley,South Victoria Land,-78.14,163.901
+88,HVY-9054A,HVY,Hidden Valley,Hidden Valley,South Victoria Land,-78.15421751,163.950428
+89,HVY-9062A,HVY,Hidden Valley,Hidden Valley,South Victoria Land,-78.14311,163.89069
+90,HVY-9130A,HVY,Hidden Valley,Hidden Valley,South Victoria Land,-78.16503243,163.9685377
+91,KR-1,KR,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.19783333,-177.1021167
+92,KR-2,KR,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.1963,-177.1043
+93,KR-4,KR,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.197,-177.06905
+94,LC1-5,LC,Cape Hallett,Cape Hallett,North Victoria Land,-72.321,170.228
+95,LGP (3-4),LGP,Cape Hallett,Cape Hallett,North Victoria Land,-72.321269,170.228218
+96,LGP (BA 1-3),LGP,Cape Hallett,Cape Hallett,North Victoria Land,-72.3212,170.2282
+97,LGP-BA LV8,LGP,Luther Vale,Cape Hallett,North Victoria Land,-72.371133,169.884367
+98,LI-10,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66187,-60.394
+99,LI-11,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66989,-60.3792
+100,LI-12,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66989,-60.3792
+101,LI-13,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66989,-60.3792
+102,LI-14,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66989,-60.3792
+103,LI-15,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66989,-60.3792
+104,LI-4,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66357,-60.39202
+105,LI-5,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66357,-60.39202
+106,LI-6,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66357,-60.39202
+107,LI-9,LI,Livingston Island,Livingston Island,North-west Antarctic Peninsula,-62.66187,-60.394
+108,LV-14,LV,Luther Vale,Cape Hallett,North Victoria Land,-72.370052,169.89582
+109,LV-18,LV,Luther Vale,Cape Hallett,North Victoria Land,-72.370052,169.89582
+110,MD-BJA1,MD,Meyer Desert,Beardmore Glacier,Transantarctic Mountains,-85.249917,167.31457
+111,MD-UN11,MD,Meyer Desert,Beardmore Glacier,Transantarctic Mountains,-85.25247,167.28073
+112,MD-UN6,MD,Meyer Desert,Beardmore Glacier,Transantarctic Mountains,-85.247633,167.30375
+113,ME-A1-1,ME,Miers Elevationanl Transect,Miers Valley,South Victoria Land,-78.09403,163.78671
+114,ME-A2-3,ME,Miers Elevationanl Transect,Miers Valley,South Victoria Land,-78.09403,163.78671
+115,ME-B1-2,ME,Miers Elevationanl Transect,Miers Valley,South Victoria Land,-78.092,163.77771
+116,ME-c2-3,ME,Miers Elevationanl Transect,Miers Valley,South Victoria Land,-78.08899,163.77509
+117,ME-C3-1,ME,Miers Elevationanl Transect,Miers Valley,South Victoria Land,-78.08899,163.77509
+118,MF1-1,MF,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.62511667,-176.7705333
+119,MF1-6,MF,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.62653333,-176.7433667
+120,MF2-1,MF,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.6236,-176.7353
+121,MF3-1,MF,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.62266667,-176.75065
+122,MFP-A1,MFP,Mt. Falconer TP,Taylor Valley,South Victoria Land,-77.5717,163.161
+123,MFP-A2,MFP,Mt. Falconer TP,Taylor Valley,South Victoria Land,-77.5717,163.161
+124,MFP-AAA,MFP,Mt. Falconer TP,Taylor Valley,South Victoria Land,-77.574361,163.163639
+125,MFP-d,MFP,Mt. Falconer TP,Taylor Valley,South Victoria Land,-77.571733,163.161
+126,MFX-2,MF,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.62411667,-176.7085
+127,MK-A6,MK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.7607,172.751317
+128,MK-KYBjA6,MK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.759966,172.768667
+129,MK-UN8,MK,Mount Kyffin,Beardmore Glacier,Transantarctic Mountains,-83.7607,172.751317
+130,MS-11,MS,Mt. Seuss Refugia,Mount Seuss,South Victoria Land,-77.03,161.71
+131,MS-12,MS,Mt. Seuss Refugia,Mount Seuss,South Victoria Land,-77.03,161.71
+132,MS-5,MS,Mt. Seuss Refugia,Mount Seuss,South Victoria Land,-77.03,161.71
+133,MS-7,MS,Mt. Seuss Refugia,Mount Seuss,South Victoria Land,-77.03,161.71
+134,MSP1-1,MSP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.48301667,-176.51275
+135,MSP1-4,MSP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.48296667,-176.4805333
+136,MSP2-1,MSP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.48188333,-176.5069667
+137,MSP3-1,MSP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.48191667,-176.4879
+138,MSP3-4,MSP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.48018333,-176.4880833
+139,MW2-1,MW,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.55958333,-176.8112167
+140,NP1-1,NP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.53455,-175.4222333
+141,NP2-1,NP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.53481667,-175.4262
+142,NP3-1,NP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.5346,-175.4231667
+143,NP3-4,NP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.53441667,-175.4166
+144,NP4-5,NP,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.53315,-175.3152333
+145,ON-10,OR,Onyx River,Lower Wright Valley,South Victoria Land,-77.46795,162.42593
+146,OR-4,OR,Onyx River,Lower Wright Valley,South Victoria Land,-77.5246,161.8972
+147,OR-8,OR,Onyx River,Lower Wright Valley,South Victoria Land,-77.51402,162.13828
+148,RM1-1,RM,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.4909,-177.1771667
+149,RM1-8,RM,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.48678333,-177.0993667
+150,RM2-1,RM,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.48788333,-177.1844
+151,RM3-1,RM,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.4869,-177.20715
+152,RM3-8,RM,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.48116667,-177.1326333
+153,SH1-1,SH,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.35655,-175.1108
+154,SH1-6,SH,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.35123333,-175.1727333
+155,SH2-1,SH,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.35905,-175.0787333
+156,SH3-2,SH,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.3597,-175.0693
+157,SH3-8,SH,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-85.35691667,-175.1621
+158,TGV1-1,TGV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.92033333,-176.9902
+159,TGV1-8,TGV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.91536667,-176.8791333
+160,TGV2-1,TGV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.91903333,-177.06025
+161,TGV3-1,TGV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.90956667,-177.0217333
+162,TGV3-9,TGV,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.91368333,-176.8831667
+163,TN1-1,TN,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.92571667,-176.0692333
+164,TN1-8,TN,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.91481667,-176.1509167
+165,TN2-1,TN,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.92381667,-176.0987667
+166,TN3-1,TN,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.92271667,-176.1242333
+167,TN3-5,TN,Shackleton Glacier,Shackleton Glacier,Transantarctic Mountains,-84.9182,-176.1281667
+168,VV-0,VV,Virginia Valley,Virginia Valley,South Victoria Land,-77.4934,160.85305
+169,VV-d,VV,Virginia Valley,Virginia Valley,South Victoria Land,-77.4934,160.85305
+170,VV-J,VV,Virginia Valley,Virginia Valley,South Victoria Land,-77.4934,160.85305
+171,VV-L,VV,Virginia Valley,Virginia Valley,South Victoria Land,-77.4934,160.85305
+172,WV-BA 1,WV,Wall Valley: Recon,Wall Valley,South Victoria Land,-77.49556,160.87517
+173,WV-UNN 1,WV,Wall Valley: Recon,Wall Valley,South Victoria Land,-77.48,160.85
+174,WV-UNN 3,WV,Wall Valley: Recon,Wall Valley,South Victoria Land,-77.48,160.85
+175,WV-UNN-2,WV,Wall Valley: Recon,Wall Valley,South Victoria Land,-77.48,160.85
+176,WV-ZS 2,WV,Wall Valley: Recon,Wall Valley,South Victoria Land,-77.498933,160.849133
