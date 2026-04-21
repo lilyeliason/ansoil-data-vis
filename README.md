@@ -4,6 +4,8 @@
 An interactive scrollytelling visualization exploring what machine learning can reveal about Antarctic soil geochemistry in the 1% of Antarctica that isn't covered in ice.
  
 Built as a final project for DSPX315 (Data Storytelling & Visualization), Brigham Young University, Spring 2026.
+
+View the full visualization at https://ansoildatavis.netlify.app/
   
 ---
  
